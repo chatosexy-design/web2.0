@@ -1,0 +1,393 @@
+
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chato Sano | Inteligencia Nutricional Premium</title>
+    
+    <!-- SEO & Meta Tags -->
+    <meta name="description" content="Transforma tu vida con Chato Sano. Análisis nutricional con IA, seguimiento de hábitos y asesoramiento inteligente.">
+    <meta name="theme-color" content="#722f37">
+    <link rel="manifest" href="manifest.json">
+    <link rel="shortcut icon" href="https://cdn-icons-png.flaticon.com/512/2927/2927347.png" type="image/x-icon">
+
+    <!-- Styles & Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        wine: { 50: '#fdf2f3', 100: '#fce4e6', 200: '#f9cbd0', 300: '#f4a4ad', 400: '#ec7281', 500: '#df4559', 600: '#cc2d42', 700: '#722f37', 800: '#8e1c2a', 900: '#781c28' },
+                        sano: { 50: '#e8f7ec', 100: '#c8ebcf', 200: '#94d8a3', 300: '#5abf71', 400: '#3eb856', 500: '#2a9640', 600: '#1f7a32', 700: '#1a612a', 800: '#174d24', 900: '#144020' }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-pattern transition-colors duration-300">
+
+    <!-- --- Navigation --- -->
+    <nav class="fixed top-0 w-full z-50 glass">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div id="nav-logo" class="flex items-center gap-3 cursor-pointer group">
+                <div class="w-10 h-10 bg-wine-700 rounded-xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
+                    <i data-lucide="apple" class="text-white w-6 h-6"></i>
+                </div>
+                <span class="text-xl font-extrabold tracking-tighter text-stone-900 dark:text-white">CHATO<span class="text-wine-700">SANO</span></span>
+            </div>
+
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#" data-view="home" class="nav-link text-sm font-bold text-wine-700">Inicio</a>
+                <a href="#" data-view="analysis" class="nav-link text-sm font-medium text-stone-600 dark:text-stone-400 hover:text-wine-700 transition-colors">Analizador</a>
+                <a href="#" data-view="dashboard" class="nav-link text-sm font-medium text-stone-600 dark:text-stone-400 hover:text-wine-700 transition-colors">Dashboard</a>
+                <a href="#" data-view="cafeteria" class="nav-link text-sm font-medium text-stone-600 dark:text-stone-400 hover:text-wine-700 transition-colors">Menú</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <button id="dark-mode-toggle" class="p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors">
+                    <i data-lucide="moon" class="w-5 h-5 text-stone-600 dark:text-stone-400"></i>
+                </button>
+                
+                <div id="auth-buttons" class="flex items-center gap-2">
+                    <button id="login-nav-btn" class="px-5 py-2 text-sm font-bold text-stone-600 dark:text-stone-300 hover:text-wine-700">Ingresar</button>
+                    <button id="register-nav-btn" class="px-5 py-2 text-sm font-bold bg-wine-700 text-white rounded-xl shadow-md hover:bg-wine-800 transition-all">Unirse</button>
+                </div>
+
+                <div id="user-profile-nav" class="hidden items-center gap-3 pl-4 border-l border-stone-200 dark:border-stone-800">
+                    <div class="text-right hidden sm:block">
+                        <p id="nav-username" class="text-xs font-black text-stone-900 dark:text-white uppercase tracking-widest"></p>
+                        <p class="text-[10px] font-bold text-sano-600">Nivel Pro</p>
+                    </div>
+                    <button id="logout-btn" class="w-10 h-10 bg-stone-100 dark:bg-stone-800 rounded-xl flex items-center justify-center text-rose-500 hover:bg-rose-50 transition-colors">
+                        <i data-lucide="log-out" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-20">
+        <!-- --- View: Home --- -->
+        <section id="view-home" class="view min-h-screen">
+            <!-- Hero Section -->
+            <div class="max-w-7xl mx-auto px-6 pt-20 pb-32 flex flex-col lg:flex-row items-center gap-16">
+                <div class="flex-1 reveal-left">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-wine-50 rounded-full mb-8 dark:bg-wine-900/20">
+                        <span class="w-2 h-2 bg-wine-600 rounded-full animate-pulse"></span>
+                        <span class="text-[10px] font-black uppercase tracking-[0.2em] text-wine-700 dark:text-wine-400">Nueva Versión 2.0 Operativa</span>
+                    </div>
+                    <h1 class="text-6xl lg:text-8xl font-black text-stone-900 leading-[1.1] mb-8 dark:text-white">
+                        Nutrición <br/> <span class="text-wine-700">Inteligente</span> para tu vida.
+                    </h1>
+                    <p class="text-xl text-stone-500 mb-12 max-w-lg leading-relaxed dark:text-stone-400 font-medium">
+                        La plataforma definitiva para analizar, rastrear y optimizar tu alimentación con el poder de la Inteligencia Artificial.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <button onclick="document.querySelector('[data-view=analysis]').click()" class="btn-primary flex items-center gap-3">
+                            Empezar ahora <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        </button>
+                        <button onclick="document.querySelector('[data-view=cafeteria]').click()" class="btn-secondary">
+                            Ver Menú
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex-1 relative reveal-right">
+                    <div class="relative w-full aspect-square max-w-xl mx-auto">
+                        <div class="absolute inset-0 bg-wine-700/5 rounded-[4rem] rotate-6"></div>
+                        <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1000&auto=format&fit=crop" 
+                             alt="Comida saludable" 
+                             class="absolute inset-0 w-full h-full object-cover rounded-[4rem] shadow-2xl z-10 animate-float">
+                        
+                        <!-- Floating Info Card -->
+                        <div class="absolute -bottom-10 -left-10 glass p-6 rounded-3xl z-20 shadow-2xl animate-pulse-soft hidden sm:block">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-sano-100 rounded-2xl flex items-center justify-center">
+                                    <i data-lucide="activity" class="text-sano-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-black text-stone-400 uppercase">Meta Diaria</p>
+                                    <p class="text-lg font-black text-stone-900 dark:text-white">85% Completado</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Tip -->
+            <div class="max-w-4xl mx-auto px-6 mb-32 reveal">
+                <div class="bg-stone-900 text-white p-12 rounded-[3rem] relative overflow-hidden dark:bg-stone-900/50">
+                    <div class="relative z-10 flex flex-col md:flex-row items-center gap-8">
+                        <div class="w-20 h-20 bg-wine-700 rounded-3xl flex items-center justify-center text-3xl">💡</div>
+                        <div class="flex-1 text-center md:text-left">
+                            <h4 class="text-stone-400 text-xs font-black uppercase tracking-[0.3em] mb-4">Consejo del Día</h4>
+                            <p id="daily-tip" class="text-2xl font-bold leading-relaxed transition-opacity duration-300 italic">"Beber agua antes de cada comida reduce el hambre excesiva."</p>
+                        </div>
+                        <button id="refresh-tip" class="w-14 h-14 bg-white/10 hover:bg-white/20 rounded-2xl flex items-center justify-center transition-all group">
+                            <i data-lucide="refresh-cw" class="w-6 h-6 group-active:rotate-180 transition-transform"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- --- View: Analysis --- -->
+        <section id="view-analysis" class="view hidden min-h-screen">
+            <div class="max-w-7xl mx-auto px-6 pt-12 pb-32">
+                <div class="text-center mb-16 reveal">
+                    <h2 class="text-5xl font-black text-stone-900 dark:text-white mb-4">Analizador Inteligente</h2>
+                    <p class="text-stone-500 font-medium">Búsqueda en tiempo real conectada a la base de datos mundial de Spoonacular.</p>
+                </div>
+
+                <div class="max-w-3xl mx-auto mb-20 reveal">
+                    <div class="relative">
+                        <i data-lucide="search" class="absolute left-6 top-1/2 -translate-y-1/2 text-stone-300 w-6 h-6"></i>
+                        <input type="text" id="food-search-modern" placeholder="Ej: Manzana, Tacos, Pizza..." 
+                               class="w-full pl-16 pr-24 py-6 bg-white border border-stone-100 rounded-[2rem] shadow-xl focus:ring-4 focus:ring-wine-700/5 focus:border-wine-700 outline-none transition-all text-lg font-medium dark:bg-stone-900 dark:border-stone-800 dark:text-white">
+                        <button id="search-action-btn" class="absolute right-4 top-1/2 -translate-y-1/2 px-6 py-3 bg-wine-700 text-white rounded-2xl font-bold text-sm shadow-lg hover:bg-wine-800 transition-all">
+                            Analizar
+                        </button>
+                    </div>
+                    
+                    <!-- Search Suggestions -->
+                    <div id="search-suggestions" class="hidden absolute w-full mt-4 bg-white border border-stone-100 rounded-3xl shadow-2xl z-40 overflow-hidden dark:bg-stone-900 dark:border-stone-800"></div>
+
+                    <!-- Categories -->
+                    <div class="flex flex-wrap justify-center gap-3 mt-8">
+                        <button data-category="Frutas" class="category-chip px-6 py-3 bg-white border border-stone-100 rounded-2xl text-xs font-bold text-stone-500 hover:bg-wine-50 hover:text-wine-700 transition-all dark:bg-stone-900 dark:border-stone-800">🍎 Frutas</button>
+                        <button data-category="Proteína" class="category-chip px-6 py-3 bg-white border border-stone-100 rounded-2xl text-xs font-bold text-stone-500 hover:bg-wine-50 hover:text-wine-700 transition-all dark:bg-stone-900 dark:border-stone-800">🥩 Proteínas</button>
+                        <button data-category="Vegetales" class="category-chip px-6 py-3 bg-white border border-stone-100 rounded-2xl text-xs font-bold text-stone-500 hover:bg-wine-50 hover:text-wine-700 transition-all dark:bg-stone-900 dark:border-stone-800">🥦 Vegetales</button>
+                        <button data-category="Postres" class="category-chip px-6 py-3 bg-white border border-stone-100 rounded-2xl text-xs font-bold text-stone-500 hover:bg-wine-50 hover:text-wine-700 transition-all dark:bg-stone-900 dark:border-stone-800">🍰 Postres</button>
+                    </div>
+                </div>
+
+                <div id="modern-analysis-result" class="hidden reveal">
+                    <!-- Result will be injected here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- --- View: Dashboard --- -->
+        <section id="view-dashboard" class="view hidden min-h-screen">
+            <div class="max-w-7xl mx-auto px-6 pt-12 pb-32">
+                <div class="flex flex-col lg:flex-row gap-8 mb-12 items-end justify-between reveal">
+                    <div>
+                        <h2 class="text-5xl font-black text-stone-900 dark:text-white mb-2">Mi Progreso</h2>
+                        <p class="text-stone-500 font-medium">Estadísticas reales basadas en tu consumo diario.</p>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="bg-white p-4 rounded-3xl border border-stone-100 flex items-center gap-4 dark:bg-stone-900 dark:border-stone-800">
+                            <div class="w-10 h-10 bg-wine-50 rounded-xl flex items-center justify-center text-wine-700 dark:bg-wine-900/30">
+                                <i data-lucide="calendar" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black text-stone-400 uppercase">Hoy</p>
+                                <p id="today-date" class="text-sm font-bold dark:text-white">-- -- --</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Main Chart -->
+                    <div class="lg:col-span-2 card-premium p-8 h-[400px]">
+                        <div class="flex justify-between items-center mb-8">
+                            <h4 class="font-black text-stone-900 dark:text-white">Consumo Semanal</h4>
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 bg-wine-700 rounded-full"></span>
+                                <span class="text-xs font-bold text-stone-400">Calorías</span>
+                            </div>
+                        </div>
+                        <div class="h-[280px]">
+                            <canvas id="progressChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Macro Card -->
+                    <div class="card-premium p-8">
+                        <h4 class="font-black text-stone-900 dark:text-white mb-8">Distribución Nutricional</h4>
+                        <div class="h-[200px] relative mb-8">
+                            <canvas id="macroChart"></canvas>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                                <p class="text-[10px] font-black text-stone-400 uppercase">Total</p>
+                                <p class="text-2xl font-black text-stone-900 dark:text-white">100%</p>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center p-4 bg-stone-50 rounded-2xl dark:bg-stone-800/50">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                                    <span class="text-xs font-bold dark:text-stone-300">Proteína</span>
+                                </div>
+                                <span class="macro-val font-black text-stone-900 dark:text-white">0g</span>
+                            </div>
+                            <div class="flex justify-between items-center p-4 bg-stone-50 rounded-2xl dark:bg-stone-800/50">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-2 h-2 bg-amber-500 rounded-full"></span>
+                                    <span class="text-xs font-bold dark:text-stone-300">Carbos</span>
+                                </div>
+                                <span class="macro-val font-black text-stone-900 dark:text-white">0g</span>
+                            </div>
+                            <div class="flex justify-between items-center p-4 bg-stone-50 rounded-2xl dark:bg-stone-800/50">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-2 h-2 bg-rose-500 rounded-full"></span>
+                                    <span class="text-xs font-bold dark:text-stone-300">Grasas</span>
+                                </div>
+                                <span class="macro-val font-black text-stone-900 dark:text-white">0g</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- --- View: Cafeteria --- -->
+        <section id="view-cafeteria" class="view hidden min-h-screen">
+            <div class="max-w-7xl mx-auto px-6 pt-12 pb-32">
+                <div class="text-center mb-16 reveal">
+                    <h2 class="text-5xl font-black text-stone-900 dark:text-white mb-4">Menú de Cafetería</h2>
+                    <p class="text-stone-500 font-medium">Alimentos locales optimizados para tu salud. Selecciona para registrar tu consumo.</p>
+                </div>
+
+                <div id="cafeteria-menu" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 reveal">
+                    <!-- Products will be injected here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- --- View: Login --- -->
+        <section id="view-login" class="view hidden min-h-screen flex items-center justify-center py-20">
+            <div class="w-full max-w-md px-6">
+                <div class="bg-white p-10 rounded-[3rem] shadow-2xl border border-stone-100 dark:bg-stone-900 dark:border-stone-800">
+                    <div class="text-center mb-10">
+                        <div class="w-16 h-16 bg-wine-700 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl">
+                            <i data-lucide="lock" class="text-white w-8 h-8"></i>
+                        </div>
+                        <h2 class="text-3xl font-black text-stone-900 dark:text-white">Bienvenido</h2>
+                        <p class="text-stone-500 font-medium">Ingresa a tu cuenta de Chato Sano</p>
+                    </div>
+
+                    <form id="login-form" class="space-y-6">
+                        <div>
+                            <label class="block text-xs font-black text-stone-400 uppercase tracking-widest mb-2 ml-4">Email</label>
+                            <input type="email" id="login-email" required placeholder="tu@email.com" 
+                                   class="w-full px-6 py-4 bg-stone-50 border border-transparent rounded-2xl focus:ring-4 focus:ring-wine-700/5 focus:border-wine-700 outline-none transition-all font-medium dark:bg-stone-800 dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-black text-stone-400 uppercase tracking-widest mb-2 ml-4">Contraseña</label>
+                            <input type="password" id="login-password" required placeholder="••••••••" 
+                                   class="w-full px-6 py-4 bg-stone-50 border border-transparent rounded-2xl focus:ring-4 focus:ring-wine-700/5 focus:border-wine-700 outline-none transition-all font-medium dark:bg-stone-800 dark:text-white">
+                        </div>
+                        <button type="submit" class="btn-primary w-full">Iniciar Sesión</button>
+                    </form>
+                    
+                    <p class="text-center mt-8 text-sm text-stone-500">¿No tienes cuenta? <a href="#" class="text-wine-700 font-bold hover:underline">Regístrate</a></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- --- Footer --- -->
+    <footer class="bg-stone-900 text-white py-20">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 bg-wine-700 rounded-xl flex items-center justify-center">
+                            <i data-lucide="apple" class="text-white w-6 h-6"></i>
+                        </div>
+                        <span class="text-xl font-extrabold tracking-tighter">CHATO<span class="text-wine-700">SANO</span></span>
+                    </div>
+                    <p class="text-stone-400 max-w-sm leading-relaxed">
+                        Transformando la salud a través de la tecnología y la inteligencia artificial. Tu bienestar es nuestra misión.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-6 uppercase text-[10px] tracking-[0.2em] text-wine-500">Plataforma</h4>
+                    <ul class="space-y-4 text-sm text-stone-400 font-medium">
+                        <li><a href="#" class="hover:text-white transition-colors">Analizador</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Dashboard</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Menú Cafetería</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-6 uppercase text-[10px] tracking-[0.2em] text-wine-500">Legal</h4>
+                    <ul class="space-y-4 text-sm text-stone-400 font-medium">
+                        <li><a href="#" class="hover:text-white transition-colors">Privacidad</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Términos</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Cookies</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+                <p class="text-xs text-stone-500 font-bold">© 2026 CHATO SANO. Todos los derechos reservados.</p>
+                <div class="flex gap-6">
+                    <a href="#" class="text-stone-500 hover:text-white transition-colors"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+                    <a href="#" class="text-stone-500 hover:text-white transition-colors"><i data-lucide="twitter" class="w-5 h-5"></i></a>
+                    <a href="#" class="text-stone-500 hover:text-white transition-colors"><i data-lucide="facebook" class="w-5 h-5"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- --- Floating Assistant --- -->
+    <div class="fixed bottom-8 right-8 z-[60]">
+        <button id="chatbot-toggle" class="w-16 h-16 bg-wine-700 text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all group">
+            <i data-lucide="message-circle" class="w-8 h-8 group-hover:hidden"></i>
+            <i data-lucide="sparkles" class="w-8 h-8 hidden group-hover:block animate-pulse"></i>
+        </button>
+
+        <div id="chat-window" class="hidden absolute bottom-20 right-0 w-[380px] h-[550px] glass rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden animate-slide-up">
+            <div class="p-6 bg-wine-700 text-white flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                        <i data-lucide="bot" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <p class="font-bold text-sm leading-none mb-1">Asistente Chato Sano</p>
+                        <p class="text-[10px] text-wine-200 uppercase font-black tracking-widest">IA Operativa</p>
+                    </div>
+                </div>
+                <button id="close-chat" class="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-4">
+                <div class="flex gap-2">
+                    <div class="w-8 h-8 bg-wine-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="bot" class="w-4 h-4 text-wine-700"></i>
+                    </div>
+                    <div class="bg-white p-4 rounded-3xl rounded-tl-none shadow-sm text-sm text-stone-700 dark:bg-stone-800 dark:text-stone-200">
+                        ¡Hola! Soy tu guía nutricional. ¿Quieres que analicemos algún alimento o tienes dudas sobre tu dieta?
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 bg-white/50 border-t border-stone-100 dark:bg-stone-900/50 dark:border-stone-800">
+                <div class="relative">
+                    <input type="text" id="chat-input" placeholder="Escribe tu consulta..." 
+                           class="w-full pl-6 pr-14 py-4 bg-white border border-stone-100 rounded-2xl outline-none focus:border-wine-700 transition-all text-sm font-medium dark:bg-stone-800 dark:border-stone-700 dark:text-white">
+                    <button id="send-chat" class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-wine-700 text-white rounded-xl flex items-center justify-center hover:bg-wine-800 transition-all">
+                        <i data-lucide="send" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- --- Toast Notifications --- -->
+    <div id="toast-container" class="fixed top-24 right-6 z-[70] flex flex-col gap-3 pointer-events-none"></div>
+
+    <!-- --- Scripts --- -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

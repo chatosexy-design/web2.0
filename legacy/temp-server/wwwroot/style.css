@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap');
+
+:root {
+    --wine-primary: #722f37;
+    --wine-dark: #4a1f24;
+    --wine-light: #9c4c56;
+    --sano-green: #3eb856;
+    --sano-light: #e8f7ec;
+    --stone-dark: #1c1917;
+    --stone-light: #f5f5f4;
+}
+
+* {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    @apply bg-[#fdfcfb] text-stone-900 selection:bg-wine-100 selection:text-wine-900;
+    overflow-x: hidden;
+}
+
+body.dark {
+    @apply bg-stone-950 text-stone-100 selection:bg-wine-900 selection:text-wine-100;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { @apply bg-transparent; }
+::-webkit-scrollbar-thumb { @apply bg-stone-200 rounded-full hover:bg-stone-300 transition-colors dark:bg-stone-800; }
+
+/* --- Animations --- */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+@keyframes pulse-soft {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+.animate-float { animation: float 6s ease-in-out infinite; }
+.animate-pulse-soft { animation: pulse-soft 3s ease-in-out infinite; }
+
+/* --- Components --- */
+.glass {
+    @apply bg-white/80 backdrop-blur-xl border-b border-white/20 dark:bg-stone-900/80 dark:border-stone-800/50;
+}
+
+.card-premium {
+    @apply bg-white rounded-[2.5rem] border border-stone-100 shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-stone-200/50 dark:bg-stone-900 dark:border-stone-800 dark:hover:shadow-none;
+}
+
+.btn-primary {
+    @apply bg-wine-700 text-white rounded-2xl font-black transition-all hover:scale-[1.02] active:scale-95 shadow-xl shadow-wine-700/20;
+}
+
+.macro-tag {
+    @apply px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest;
+}
+
+.category-chip {
+    @apply px-6 py-2.5 rounded-full text-sm font-bold border-2 border-stone-100 text-stone-500 transition-all hover:border-wine-700 hover:text-wine-700 dark:border-stone-800 dark:text-stone-400;
+}
+
+.category-chip.active {
+    @apply border-wine-700 bg-wine-700 text-white;
+}
+
+/* --- Navigation --- */
+.nav-link {
+    @apply relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-wine-700 after:transition-all hover:after:w-full;
+}
+
+/* --- Reveal Animations --- */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.reveal-left {
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reveal-left.active {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.reveal-right {
+    opacity: 0;
+    transform: translateX(30px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reveal-right.active {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* --- View Transitions --- */
+.view {
+    @apply transition-all duration-500;
+}
+
+.view-enter {
+    animation: viewEnter 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes viewEnter {
+    from { opacity: 0; transform: scale(0.98) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* --- Bg Patterns --- */
+.bg-pattern {
+    background-image: radial-gradient(#722f3708 1.5px, transparent 1.5px);
+    background-size: 30px 30px;
+}
+
+.dark .bg-pattern {
+    background-image: radial-gradient(#ffffff05 1.5px, transparent 1.5px);
+}
