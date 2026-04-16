@@ -36,9 +36,9 @@ export const refineQuery = async (query: string): Promise<ExtractedFood[]> => {
 
     if (Array.isArray(response.data) && response.data[0]?.generated_text) {
       const text = response.data[0].generated_text.replace(prompt, '').trim();
-      const lines = text.split(';').map(l => l.trim()).filter(l => l.includes('|'));
+      const lines = text.split(';').map((l: string) => l.trim()).filter((l: string) => l.includes('|'));
       
-      const extracted = lines.map(line => {
+      const extracted = lines.map((line: string) => {
         const [item, quantity] = line.split('|');
         return { item: item.trim(), quantity: quantity.trim() || '1' };
       });

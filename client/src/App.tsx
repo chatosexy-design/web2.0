@@ -1,11 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import AIChatButton from './components/AIChatButton';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
-import Analysis from './pages/Analysis';
 import Cafeteria from './pages/Cafeteria';
 import Admin from './pages/Admin';
 import { useAuthStore } from './store/auth';
@@ -27,7 +27,7 @@ const PrivateRoute = ({ children, roles }: { children: React.ReactNode, roles?: 
 const App: React.FC = () => {
   return (
     <Router>
-      <div className="min-h-screen">
+      <div className="min-h-screen relative">
         <Navbar />
         <main className="pt-24 pb-12 px-6">
           <Routes>
@@ -41,11 +41,6 @@ const App: React.FC = () => {
                 <Dashboard />
               </PrivateRoute>
             } />
-            <Route path="/analysis" element={
-              <PrivateRoute roles={[Role.STUDENT]}>
-                <Analysis />
-              </PrivateRoute>
-            } />
             <Route path="/cafeteria" element={
               <PrivateRoute>
                 <Cafeteria />
@@ -56,8 +51,10 @@ const App: React.FC = () => {
                 <Admin />
               </PrivateRoute>
             } />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
+        <AIChatButton />
       </div>
     </Router>
   );

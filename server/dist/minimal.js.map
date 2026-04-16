@@ -1,0 +1,1 @@
+{"version":3,"file":"minimal.js","sourceRoot":"","sources":["../src/minimal.ts"],"names":[],"mappings":";;;;;AAAA,sDAA8B;AAE9B,MAAM,GAAG,GAAG,IAAA,iBAAO,GAAE,CAAC;AACtB,MAAM,IAAI,GAAG,IAAI,CAAC;AAElB,GAAG,CAAC,MAAM,CAAC,IAAI,EAAE,GAAG,EAAE;IACpB,OAAO,CAAC,GAAG,CAAC,qCAAqC,IAAI,EAAE,CAAC,CAAC;AAC3D,CAAC,CAAC,CAAC"}

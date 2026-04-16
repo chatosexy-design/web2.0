@@ -23,10 +23,7 @@ const Navbar: React.FC = () => {
         <div className="hidden md:flex items-center gap-8">
           <Link to="/" className="text-sm font-bold text-wine-700">Inicio</Link>
           {user?.role === Role.STUDENT && (
-            <>
-              <Link to="/analysis" className="text-sm font-medium text-stone-600 dark:text-stone-400 hover:text-wine-700 transition-colors">Analizador</Link>
-              <Link to="/dashboard" className="text-sm font-medium text-stone-600 dark:text-stone-400 hover:text-wine-700 transition-colors">Dashboard</Link>
-            </>
+            <Link to="/dashboard" className="text-sm font-medium text-stone-600 dark:text-stone-400 hover:text-wine-700 transition-colors">Dashboard</Link>
           )}
           <Link to="/cafeteria" className="text-sm font-medium text-stone-600 dark:text-stone-400 hover:text-wine-700 transition-colors">Menú</Link>
           {user?.role === Role.ADMIN && (
