@@ -13,7 +13,6 @@ import {
 } from 'chart.js';
 import { Line, Doughnut } from 'react-chartjs-2';
 import api from '../api';
-import { useAuthStore } from '../store/auth';
 
 ChartJS.register(
   CategoryScale,
@@ -32,12 +31,16 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     const fetchStats = async () => {
+      let remoteStats = {};
+
       try {
         const res = await api.get('/students/stats');
-        setStats(res.data.data);
+        remoteStats = res.data.data || {};
       } catch (err) {
         console.error(err);
       } finally {
+        const localStats = getLocalDashboardStats();
+        setStats(mergeStatsByDay(remoteStats, localStats));
         setLoading(false);
       }
     };
@@ -46,13 +49,14 @@ const Dashboard: React.FC = () => {
 
   const todayStr = new Date().toDateString();
   const todayStats = stats?.[todayStr] || { calories: 0, protein: 0, carbs: 0, fat: 0 };
+  const weeklyEntries = getWeeklyEntries(stats);
 
   const lineData = {
-    labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+    labels: weeklyEntries.map((entry) => entry.label),
     datasets: [
       {
         label: 'Calorías',
-        data: [0, 0, 0, 0, 0, 0, 0], // In a real app, populate from weekly data
+        data: weeklyEntries.map((entry) => entry.calories),
         borderColor: '#722f37',
         backgroundColor: 'rgba(114, 47, 55, 0.05)',
         fill: true,
@@ -134,6 +138,56 @@ const Dashboard: React.FC = () => {
       </div>
     </div>
   );
+};
+
+const getLocalDashboardStats = () => {
+  const logs = JSON.parse(localStorage.getItem('foodLogs') || '[]');
+
+  return logs.reduce((acc: any, log: any) => {
+    const dateStr = new Date(log.date).toDateString();
+    if (!acc[dateStr]) {
+      acc[dateStr] = { calories: 0, protein: 0, carbs: 0, fat: 0 };
+    }
+
+    acc[dateStr].calories += Number(log.calories || 0);
+    acc[dateStr].protein += Number(log.protein || 0);
+    acc[dateStr].carbs += Number(log.carbs || 0);
+    acc[dateStr].fat += Number(log.fat || 0);
+
+    return acc;
+  }, {});
+};
+
+const mergeStatsByDay = (remoteStats: any, localStats: any) => {
+  const merged = { ...remoteStats };
+
+  Object.entries(localStats).forEach(([date, values]: [string, any]) => {
+    if (!merged[date]) {
+      merged[date] = { calories: 0, protein: 0, carbs: 0, fat: 0 };
+    }
+
+    merged[date].calories += Number(values.calories || 0);
+    merged[date].protein += Number(values.protein || 0);
+    merged[date].carbs += Number(values.carbs || 0);
+    merged[date].fat += Number(values.fat || 0);
+  });
+
+  return merged;
+};
+
+const getWeeklyEntries = (stats: any) => {
+  return Array.from({ length: 7 }, (_, index) => {
+    const date = new Date();
+    date.setDate(date.getDate() - (6 - index));
+
+    const dateKey = date.toDateString();
+    const dayStats = stats?.[dateKey] || { calories: 0, protein: 0, carbs: 0, fat: 0 };
+
+    return {
+      label: date.toLocaleDateString('es-ES', { weekday: 'short' }),
+      calories: dayStats.calories
+    };
+  });
 };
 
 const StatCard = ({ icon, label, value, color }: any) => (
