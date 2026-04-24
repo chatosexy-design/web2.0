@@ -8,6 +8,7 @@ import cafeteriaRoutes from './routes/cafeteria';
 import adminRoutes from './routes/admin';
 import nutritionRoutes from './routes/nutrition';
 import { errorHandler } from './middleware/error';
+import { connectDB } from './config/db';
 
 dotenv.config();
 
@@ -30,6 +31,15 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+const startServer = async () => {
+  await connectDB();
+
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+  });
+};
+
+startServer().catch((error) => {
+  console.error('Error al iniciar el servidor:', error);
+  process.exit(1);
 });

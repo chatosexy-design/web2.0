@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Utensils, Plus, Edit2, Trash2, Zap } from 'lucide-react';
 import api from '../api';
 import { useAuthStore } from '../store/auth';
+import { useNutritionStore } from '../store/nutrition';
 import { Role } from '../types';
 import type { Dish } from '../types';
 
 const Cafeteria: React.FC = () => {
   const { user } = useAuthStore();
+  const { addLog } = useNutritionStore();
   const [dishes, setDishes] = useState<Dish[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -50,23 +52,20 @@ const Cafeteria: React.FC = () => {
     }
   };
 
-  const handleConsume = (dish: Dish) => {
+  const handleConsume = async (dish: Dish) => {
     try {
       setConsumingId(dish.id);
 
-      const savedLogs = JSON.parse(localStorage.getItem('foodLogs') || '[]');
-      const newLog = {
-        id: `dish-log-${Date.now()}`,
-        itemName: dish.name,
-        calories: dish.calories,
-        protein: dish.protein,
-        carbs: dish.carbs,
-        fat: dish.fat,
-        date: new Date().toISOString()
-      };
+      // Save to backend
+      const res = await api.post('/students/log-ia', { 
+        query: dish.name,
+        mealType: 'almuerzo' // Default for cafeteria consumption
+      });
 
-      localStorage.setItem('foodLogs', JSON.stringify([newLog, ...savedLogs]));
-      setFeedbackMessage(`${dish.name} se agrego al dashboard.`);
+      // Update store in real-time
+      addLog(res.data.data);
+
+      setFeedbackMessage(`${dish.name} se agregó al historial y dashboard.`);
 
       window.setTimeout(() => {
         setFeedbackMessage('');

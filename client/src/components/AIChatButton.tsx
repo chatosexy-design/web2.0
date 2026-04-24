@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageSquare, X, Send, Zap, Loader2, Apple } from 'lucide-react';
+import { MessageSquare, X, Send, Zap, Loader2, Apple, Plus } from 'lucide-react';
 import api from '../api';
+import { useNutritionStore } from '../store/nutrition';
 
 interface Message {
   id: string;
@@ -10,6 +11,7 @@ interface Message {
 }
 
 const AIChatButton: React.FC = () => {
+  const { addLog } = useNutritionStore();
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [messages, setMessages] = useState<Message[]>([
@@ -68,6 +70,20 @@ const AIChatButton: React.FC = () => {
     }
   };
 
+  const handleLog = async (data: any) => {
+    try {
+      const res = await api.post('/students/log-ia', { 
+        query: data.name,
+        mealType: 'refrigerio'
+      });
+      addLog(res.data.data);
+      alert('¡Consumo registrado con éxito!');
+    } catch (err) {
+      console.error(err);
+      alert('Error al registrar el consumo.');
+    }
+  };
+
   return (
     <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end">
       {/* Chat Window */}
@@ -117,21 +133,27 @@ const AIChatButton: React.FC = () => {
                       <div className="grid grid-cols-2 gap-3">
                         <div className="bg-white dark:bg-stone-800 p-3 rounded-2xl shadow-sm">
                           <p className="text-[8px] font-black text-stone-400 uppercase tracking-tighter">Calorías</p>
-                          <p className="text-lg font-black text-wine-700">{msg.data.calories.toFixed(0)} <span className="text-[10px]">kcal</span></p>
+                          <p className="text-lg font-black text-wine-700">{(msg.data.calories || 0).toFixed(0)} <span className="text-[10px]">kcal</span></p>
                         </div>
                         <div className="bg-white dark:bg-stone-800 p-3 rounded-2xl shadow-sm">
                           <p className="text-[8px] font-black text-stone-400 uppercase tracking-tighter">Proteína</p>
-                          <p className="text-lg font-black text-emerald-600">{msg.data.protein.toFixed(1)} <span className="text-[10px]">g</span></p>
+                          <p className="text-lg font-black text-emerald-600">{(msg.data.protein || 0).toFixed(1)} <span className="text-[10px]">g</span></p>
                         </div>
                         <div className="bg-white dark:bg-stone-800 p-3 rounded-2xl shadow-sm">
                           <p className="text-[8px] font-black text-stone-400 uppercase tracking-tighter">Carbohidratos</p>
-                          <p className="text-lg font-black text-amber-500">{msg.data.carbs.toFixed(1)} <span className="text-[10px]">g</span></p>
+                          <p className="text-lg font-black text-amber-500">{(msg.data.carbs || 0).toFixed(1)} <span className="text-[10px]">g</span></p>
                         </div>
                         <div className="bg-white dark:bg-stone-800 p-3 rounded-2xl shadow-sm">
                           <p className="text-[8px] font-black text-stone-400 uppercase tracking-tighter">Grasas</p>
-                          <p className="text-lg font-black text-rose-500">{msg.data.fat.toFixed(1)} <span className="text-[10px]">g</span></p>
+                          <p className="text-lg font-black text-rose-500">{(msg.data.fat || 0).toFixed(1)} <span className="text-[10px]">g</span></p>
                         </div>
                       </div>
+                      <button 
+                        onClick={() => handleLog(msg.data)}
+                        className="w-full py-2 bg-wine-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-wine-800 transition-colors flex items-center justify-center gap-2"
+                      >
+                        <Plus className="w-3 h-3" /> Registrar Consumo
+                      </button>
                     </div>
                   )}
                 </div>

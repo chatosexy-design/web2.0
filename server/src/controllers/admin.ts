@@ -1,36 +1,35 @@
 import { Response, NextFunction } from 'express';
-import prisma from '../config/db';
+import User from '../models/User';
+import Student from '../models/Student';
+import FoodLog from '../models/FoodLog';
 import { AuthRequest } from '../middleware/auth';
 
 export const getDashboardStats = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const totalStudents = await prisma.student.count();
-    const totalUsers = await prisma.user.count();
-    const totalFoodLogs = await prisma.foodLog.count();
+    const totalStudents = await Student.countDocuments();
+    const totalUsers = await User.countDocuments();
+    const totalFoodLogs = await FoodLog.countDocuments();
     
-    // Most consumed dishes (top 5)
-    const topDishes = await prisma.foodLog.groupBy({
-      by: ['dishId', 'itemName'],
-      _count: { dishId: true },
-      orderBy: { _count: { dishId: 'desc' } },
-      take: 5
-    });
+    // Most consumed dishes (top 5) using aggregation
+    const topDishes = await FoodLog.aggregate([
+      { $group: { _id: { dishId: '$dishId', itemName: '$itemName' }, count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 5 }
+    ]);
 
-    // Calories per group (average)
-    const groupStats = await prisma.student.findMany({
-      include: {
-        logs: {
-          select: { calories: true }
-        }
-      }
-    });
+    // Calories per semester (average)
+    const students = await Student.find().lean();
+    const studentIds = students.map(s => s._id);
+    const logs = await FoodLog.find({ studentId: { $in: studentIds } }).lean();
 
-    const groupAverages = groupStats.reduce((acc: any, student) => {
-      const group = student.group;
-      if (!acc[group]) acc[group] = { total: 0, count: 0 };
-      student.logs.forEach(log => {
-        acc[group].total += log.calories;
-        acc[group].count++;
+    const semesterAverages = students.reduce((acc: any, student: any) => {
+      const semester = student.semester;
+      if (!acc[semester]) acc[semester] = { total: 0, count: 0 };
+      
+      const studentLogs = logs.filter(l => l.studentId.toString() === student._id.toString());
+      studentLogs.forEach(log => {
+        acc[semester].total += log.calories;
+        acc[semester].count++;
       });
       return acc;
     }, {});
@@ -42,7 +41,7 @@ export const getDashboardStats = async (req: AuthRequest, res: Response, next: N
         totalUsers, 
         totalFoodLogs, 
         topDishes, 
-        groupAverages 
+        semesterAverages 
       } 
     });
   } catch (error) {

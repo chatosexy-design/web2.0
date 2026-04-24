@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import prisma from '../config/db';
+import Dish from '../models/Dish';
 import { analyzeFoodIA } from '../services/nutrition';
 
 const DEFAULT_SCHOOL_MENU = [
@@ -114,20 +114,11 @@ const buildFallbackMenu = () =>
 
 export const getDishes = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    let dishes = await prisma.dish.findMany({
-      where: { available: true },
-      orderBy: [{ category: 'asc' }, { name: 'asc' }]
-    });
+    let dishes = await Dish.find({ available: true }).sort({ category: 1, name: 1 });
 
     if (dishes.length === 0) {
-      await prisma.dish.createMany({
-        data: DEFAULT_SCHOOL_MENU
-      });
-
-      dishes = await prisma.dish.findMany({
-        where: { available: true },
-        orderBy: [{ category: 'asc' }, { name: 'asc' }]
-      });
+      await Dish.insertMany(DEFAULT_SCHOOL_MENU);
+      dishes = await Dish.find({ available: true }).sort({ category: 1, name: 1 });
     }
 
     res.status(200).json({ success: true, data: dishes });
@@ -159,14 +150,12 @@ export const createDish = async (req: Request, res: Response, next: NextFunction
       };
     }
 
-    const dish = await prisma.dish.create({
-      data: {
-        name,
-        description,
-        price,
-        category,
-        ...macros
-      }
+    const dish = await Dish.create({
+      name,
+      description,
+      price,
+      category,
+      ...macros
     });
 
     res.status(201).json({ success: true, data: dish });
@@ -178,10 +167,7 @@ export const createDish = async (req: Request, res: Response, next: NextFunction
 export const updateDish = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    const dish = await prisma.dish.update({
-      where: { id: id as string },
-      data: req.body
-    });
+    const dish = await Dish.findByIdAndUpdate(id, req.body, { new: true });
     res.status(200).json({ success: true, data: dish });
   } catch (error) {
     next(error);
@@ -191,7 +177,7 @@ export const updateDish = async (req: Request, res: Response, next: NextFunction
 export const deleteDish = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    await prisma.dish.delete({ where: { id: id as string } });
+    await Dish.findByIdAndDelete(id);
     res.status(200).json({ success: true, message: 'Platillo eliminado' });
   } catch (error) {
     next(error);

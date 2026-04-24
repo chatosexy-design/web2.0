@@ -9,13 +9,18 @@ export interface User {
   email: string;
   role: Role;
   name?: string;
+  studentId?: string;
+  student?: Student | null;
 }
 
 export interface Student {
   id: string;
-  controlNumber: string;
-  name: string;
-  group: string;
+  firstName: string;
+  lastName: string;
+  semester: string;
+  email: string;
+  specialty: string;
+  shift: string;
 }
 
 export interface Dish {
@@ -31,6 +36,13 @@ export interface Dish {
   available: boolean;
 }
 
+export enum MealType {
+  DESAYUNO = 'desayuno',
+  ALMUERZO = 'almuerzo',
+  CENA = 'cena',
+  REFRIGERIO = 'refrigerio'
+}
+
 export interface FoodLog {
   id: string;
   itemName: string;
@@ -38,5 +50,6 @@ export interface FoodLog {
   protein: number;
   carbs: number;
   fat: number;
+  mealType: MealType;
   date: string;
 }

@@ -1,22 +1,23 @@
-import prisma from './config/db';
+import { connectDB } from './config/db';
 import dotenv from 'dotenv';
+import mongoose from 'mongoose';
 
 dotenv.config();
 
-const testPrisma = async () => {
+const testMongoose = async () => {
   try {
-    console.log('🔍 Probando conexión a la base de datos...');
-    console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'Definida' : 'No definida');
+    console.log('🔍 Probando conexión a MongoDB...');
+    console.log('MONGODB_URI:', process.env.MONGODB_URI ? 'Definida' : 'No definida');
     
-    // Intenta una operación simple
-    await prisma.$connect();
-    console.log('✅ Conexión exitosa con Prisma Client');
+    await connectDB();
+    console.log('✅ Conexión exitosa con Mongoose');
     
-    await prisma.$disconnect();
+    await mongoose.connection.close();
+    console.log('📡 Conexión cerrada');
   } catch (error) {
-    console.error('❌ Error al conectar con Prisma:', error);
+    console.error('❌ Error al conectar con MongoDB:', error);
     process.exit(1);
   }
 };
 
-testPrisma();
+testMongoose();

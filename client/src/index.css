@@ -24,4 +24,29 @@
   .input-premium {
     @apply w-full px-6 py-4 bg-stone-50 border-2 border-transparent rounded-2xl focus:border-wine-700 focus:bg-white outline-none font-bold transition-all dark:bg-stone-800 dark:focus:bg-stone-900;
   }
+
+  /* Animación de Lechuga */
+  @keyframes lettuce-open {
+    0% {
+      transform: scale(0) rotate(0deg);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.2) rotate(180deg);
+      opacity: 0.8;
+    }
+    100% {
+      transform: scale(1) rotate(360deg);
+      opacity: 1;
+    }
+  }
+
+  .animate-lettuce {
+    animation: lettuce-open 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+
+  .lettuce-leaf {
+    @apply absolute w-12 h-16 bg-emerald-500 rounded-full opacity-80;
+    filter: blur(1px);
+  }
 }

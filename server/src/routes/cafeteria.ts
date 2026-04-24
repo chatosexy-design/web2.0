@@ -1,7 +1,7 @@
 import express from 'express';
 import { getDishes, createDish, updateDish, deleteDish } from '../controllers/cafeteria';
 import { protect, authorize } from '../middleware/auth';
-import { Role } from '@prisma/client';
+import { Roles } from '../types/roles';
 
 const router = express.Router();
 
@@ -10,7 +10,7 @@ router.get('/', getDishes);
 
 // Private: manage menu
 router.use(protect);
-router.use(authorize(Role.CAFETERIA, Role.ADMIN));
+router.use(authorize(Roles.CAFETERIA, Roles.ADMIN));
 
 router.post('/', createDish);
 router.put('/:id', updateDish);

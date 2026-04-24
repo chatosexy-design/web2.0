@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import AIChatButton from './components/AIChatButton';
+import LettuceMascot from './components/LettuceMascot';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -55,6 +56,7 @@ const App: React.FC = () => {
           </Routes>
         </main>
         <AIChatButton />
+        <LettuceMascot />
       </div>
     </Router>
   );
