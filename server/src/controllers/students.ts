@@ -52,13 +52,18 @@ export const getStudentProfile = async (req: AuthRequest, res: Response, next: N
       date: { $gte: startOfToday }
     }).lean();
 
-    const recommendations = OMSAdvisor.analyzeDailyIntake(dailyLogs);
+    // Calcular targets personalizados
+    const { NutritionCalculator } = await import('../services/nutritionCalculator');
+    const targets = NutritionCalculator.getDetailedTargets(student);
+
+    const recommendations = OMSAdvisor.analyzeDailyIntake(dailyLogs, targets);
 
     res.status(200).json({ 
       success: true, 
       data: { 
         ...student.toObject(), 
         logs,
+        nutritionalTargets: targets,
         omsRecommendations: recommendations 
       } 
     });
@@ -71,7 +76,9 @@ export const logFoodIA = async (req: AuthRequest, res: Response, next: NextFunct
   const { query, mealType } = req.body;
 
   try {
-    const nutrition = await analyzeFoodIA(query);
+    const { refineQuery } = await import('../services/aiService');
+    const extractedFoods = await refineQuery(query);
+    const nutrition = await analyzeFoodIA(extractedFoods);
     
     const log = await FoodLog.create({
       studentId: req.user?.studentId!,
@@ -80,10 +87,20 @@ export const logFoodIA = async (req: AuthRequest, res: Response, next: NextFunct
       protein: nutrition.protein,
       carbs: nutrition.carbs,
       fat: nutrition.fat,
+      sugar: nutrition.sugar || 0,
+      sodium: nutrition.sodium || 0,
+      fiber: nutrition.fiber || 0,
       mealType: mealType || 'refrigerio'
     });
 
-    res.status(201).json({ success: true, data: log });
+    res.status(201).json({ 
+      success: true, 
+      data: {
+        ...log.toObject(),
+        warnings: nutrition.warnings,
+        alternatives: nutrition.alternatives
+      } 
+    });
   } catch (error) {
     next(error);
   }
@@ -121,16 +138,27 @@ export const getNutritionStats = async (req: AuthRequest, res: Response, next: N
     const logs = await FoodLog.find({ studentId: req.user?.studentId! })
       .sort({ date: -1 });
 
-    // Aggregate by day (simple logic)
+    // Aggregate by day (enhanced logic)
     const stats = logs.reduce((acc: any, log) => {
       const dateStr = log.date.toDateString();
       if (!acc[dateStr]) {
-        acc[dateStr] = { calories: 0, protein: 0, carbs: 0, fat: 0 };
+        acc[dateStr] = { 
+          calories: 0, 
+          protein: 0, 
+          carbs: 0, 
+          fat: 0,
+          sugar: 0,
+          sodium: 0,
+          fiber: 0
+        };
       }
-      acc[dateStr].calories += log.calories;
-      acc[dateStr].protein += log.protein;
-      acc[dateStr].carbs += log.carbs;
-      acc[dateStr].fat += log.fat;
+      acc[dateStr].calories += log.calories || 0;
+      acc[dateStr].protein += log.protein || 0;
+      acc[dateStr].carbs += log.carbs || 0;
+      acc[dateStr].fat += log.fat || 0;
+      acc[dateStr].sugar += log.sugar || 0;
+      acc[dateStr].sodium += log.sodium || 0;
+      acc[dateStr].fiber += log.fiber || 0;
       return acc;
     }, {});
 
@@ -159,12 +187,23 @@ export const getParentStats = async (req: AuthRequest, res: Response, next: Next
     const stats = logs.reduce((acc: any, log) => {
       const dateStr = log.date.toDateString();
       if (!acc[dateStr]) {
-        acc[dateStr] = { calories: 0, protein: 0, carbs: 0, fat: 0 };
+        acc[dateStr] = { 
+          calories: 0, 
+          protein: 0, 
+          carbs: 0, 
+          fat: 0,
+          sugar: 0,
+          sodium: 0,
+          fiber: 0
+        };
       }
-      acc[dateStr].calories += log.calories;
-      acc[dateStr].protein += log.protein;
-      acc[dateStr].carbs += log.carbs;
-      acc[dateStr].fat += log.fat;
+      acc[dateStr].calories += log.calories || 0;
+      acc[dateStr].protein += log.protein || 0;
+      acc[dateStr].carbs += log.carbs || 0;
+      acc[dateStr].fat += log.fat || 0;
+      acc[dateStr].sugar += log.sugar || 0;
+      acc[dateStr].sodium += log.sodium || 0;
+      acc[dateStr].fiber += log.fiber || 0;
       return acc;
     }, {});
 

@@ -9,6 +9,9 @@ const foodLogSchema = new Schema(
     protein: { type: Number, required: true, default: 0 },
     carbs: { type: Number, required: true, default: 0 },
     fat: { type: Number, required: true, default: 0 },
+    sugar: { type: Number, default: 0 },
+    sodium: { type: Number, default: 0 },
+    fiber: { type: Number, default: 0 },
     mealType: { 
       type: String, 
       enum: ['desayuno', 'almuerzo', 'cena', 'refrigerio'], 

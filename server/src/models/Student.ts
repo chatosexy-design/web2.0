@@ -9,13 +9,28 @@ const studentSchema = new Schema(
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     specialty: { type: String, required: true, trim: true },
     shift: { type: String, required: true, trim: true },
-    parentAccessCode: { type: String, unique: true, sparse: true }
+    parentAccessCode: { type: String, unique: true, sparse: true },
+    // Campos de perfil avanzado
+    age: { type: Number, default: 16 },
+    weight: { type: Number, default: 60 }, // kg
+    height: { type: Number, default: 165 }, // cm
+    sex: { type: String, enum: ['M', 'F', 'Otro'], default: 'Otro' },
+    activityLevel: { 
+      type: String, 
+      enum: ['sedentario', 'ligero', 'moderado', 'activo', 'muy_activo'], 
+      default: 'moderado' 
+    },
+    goal: { 
+      type: String, 
+      enum: ['perder_peso', 'mantener', 'ganar_musculo'], 
+      default: 'mantener' 
+    }
   },
   { timestamps: true }
 );
 
 // Generar código parental automáticamente si no existe
-studentSchema.pre('save', async function (next) {
+studentSchema.pre('save', async function () {
   const student = this as any;
   if (!student.parentAccessCode) {
     let isUnique = false;
@@ -27,7 +42,6 @@ studentSchema.pre('save', async function (next) {
     }
     student.parentAccessCode = newCode;
   }
-  next();
 });
 
 studentSchema.virtual('fullName').get(function fullName() {

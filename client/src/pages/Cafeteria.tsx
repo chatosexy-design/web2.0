@@ -121,8 +121,16 @@ const Cafeteria: React.FC = () => {
                 {categoryDishes.map((dish) => (
                   <div key={dish.id} className="card-premium p-8 group cursor-pointer">
                     <div className="flex justify-between items-start mb-8">
-                      <div className="w-16 h-16 bg-stone-50 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition-transform dark:bg-stone-800">
-                        <Utensils className="w-8 h-8 text-wine-700" />
+                      <div className="relative">
+                        <div className="w-16 h-16 bg-stone-50 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition-transform dark:bg-stone-800">
+                          <Utensils className="w-8 h-8 text-wine-700" />
+                        </div>
+                        {dish.trafficLight && (
+                          <div className={`absolute -top-2 -right-2 w-6 h-6 rounded-full border-2 border-white dark:border-stone-900 shadow-sm ${
+                            dish.trafficLight === 'verde' ? 'bg-emerald-500' : 
+                            dish.trafficLight === 'amarillo' ? 'bg-amber-400' : 'bg-rose-500'
+                          }`} title={`Semáforo Nutricional: ${dish.trafficLight.toUpperCase()}`} />
+                        )}
                       </div>
                       <div className="flex flex-col items-end">
                         <span className="text-2xl font-black text-wine-700 dark:text-wine-400">${dish.price}</span>

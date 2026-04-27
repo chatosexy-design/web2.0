@@ -8,6 +8,14 @@ const dishSchema = new Schema(
     protein: { type: Number, required: true, default: 0 },
     carbs: { type: Number, required: true, default: 0 },
     fat: { type: Number, required: true, default: 0 },
+    sugar: { type: Number, default: 0 },
+    sodium: { type: Number, default: 0 },
+    fiber: { type: Number, default: 0 },
+    trafficLight: { 
+      type: String, 
+      enum: ['verde', 'amarillo', 'rojo'], 
+      default: 'verde' 
+    },
     price: { type: Number, required: true, default: 0 },
     category: { type: String, default: 'General', trim: true },
     available: { type: Boolean, default: true }

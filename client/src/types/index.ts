@@ -31,6 +31,10 @@ export interface Dish {
   protein: number;
   carbs: number;
   fat: number;
+  sugar: number;
+  sodium: number;
+  fiber: number;
+  trafficLight: 'verde' | 'amarillo' | 'rojo';
   price: number;
   category: string;
   available: boolean;
@@ -50,6 +54,9 @@ export interface FoodLog {
   protein: number;
   carbs: number;
   fat: number;
+  sugar: number;
+  sodium: number;
+  fiber: number;
   mealType: MealType;
   date: string;
 }

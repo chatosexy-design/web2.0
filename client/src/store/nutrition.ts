@@ -7,6 +7,9 @@ interface NutritionStats {
     protein: number;
     carbs: number;
     fat: number;
+    sugar: number;
+    sodium: number;
+    fiber: number;
   };
 }
 
@@ -34,7 +37,15 @@ export const useNutritionStore = create<NutritionState>((set, get) => ({
   addLog: (log: any) => {
     const dateStr = new Date(log.date || new Date()).toDateString();
     const currentStats = get().stats;
-    const dayStats = currentStats[dateStr] || { calories: 0, protein: 0, carbs: 0, fat: 0 };
+    const dayStats = currentStats[dateStr] || { 
+      calories: 0, 
+      protein: 0, 
+      carbs: 0, 
+      fat: 0,
+      sugar: 0,
+      sodium: 0,
+      fiber: 0
+    };
 
     set({
       stats: {
@@ -44,6 +55,9 @@ export const useNutritionStore = create<NutritionState>((set, get) => ({
           protein: dayStats.protein + (log.protein || 0),
           carbs: dayStats.carbs + (log.carbs || 0),
           fat: dayStats.fat + (log.fat || 0),
+          sugar: (dayStats.sugar || 0) + (log.sugar || 0),
+          sodium: (dayStats.sodium || 0) + (log.sodium || 0),
+          fiber: (dayStats.fiber || 0) + (log.fiber || 0),
         },
       },
     });
