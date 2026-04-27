@@ -8,10 +8,27 @@ const studentSchema = new Schema(
     semester: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     specialty: { type: String, required: true, trim: true },
-    shift: { type: String, required: true, trim: true }
+    shift: { type: String, required: true, trim: true },
+    parentAccessCode: { type: String, unique: true, sparse: true }
   },
   { timestamps: true }
 );
+
+// Generar código parental automáticamente si no existe
+studentSchema.pre('save', async function (next) {
+  const student = this as any;
+  if (!student.parentAccessCode) {
+    let isUnique = false;
+    let newCode = '';
+    while (!isUnique) {
+      newCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+      const existing = await mongoose.models.Student.findOne({ parentAccessCode: newCode });
+      if (!existing) isUnique = true;
+    }
+    student.parentAccessCode = newCode;
+  }
+  next();
+});
 
 studentSchema.virtual('fullName').get(function fullName() {
   return `${this.firstName} ${this.lastName}`.trim();

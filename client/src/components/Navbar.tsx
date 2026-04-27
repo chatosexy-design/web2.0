@@ -26,6 +26,7 @@ const Navbar: React.FC = () => {
             <Link to="/dashboard" className="text-sm font-medium text-stone-600 dark:text-stone-400 hover:text-wine-700 transition-colors">Dashboard</Link>
           )}
           <Link to="/cafeteria" className="text-sm font-medium text-stone-600 dark:text-stone-400 hover:text-wine-700 transition-colors">Menú</Link>
+          <Link to="/parent-portal" className="text-sm font-medium text-stone-600 dark:text-stone-400 hover:text-wine-700 transition-colors">Padres</Link>
           {user?.role === Role.ADMIN && (
             <Link to="/admin" className="text-sm font-medium text-stone-600 dark:text-stone-400 hover:text-wine-700 transition-colors font-bold">Panel Admin</Link>
           )}

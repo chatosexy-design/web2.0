@@ -6,13 +6,41 @@ import { analyzeFoodIA } from '../services/nutrition';
 import { OMSAdvisor } from '../services/omsAdvisor';
 
 export const getStudentProfile = async (req: AuthRequest, res: Response, next: NextFunction) => {
-  if (!req.user?.studentId) {
-    return res.status(403).json({ success: false, error: 'No tienes permisos de estudiante' });
-  }
-
   try {
-    const student = await Student.findById(req.user.studentId).lean();
-    const logs = await FoodLog.find({ studentId: req.user.studentId })
+    let student;
+    
+    // Intentar buscar por studentId del token, si no existe, buscar por userId
+    if (req.user?.studentId) {
+      student = await Student.findById(req.user.studentId);
+    } else if (req.user?.id) {
+      student = await Student.findOne({ userId: req.user.id });
+    }
+    
+    if (!student) {
+      return res.status(404).json({ success: false, error: 'Estudiante no encontrado. Asegúrate de tener una cuenta de estudiante.' });
+    }
+
+    const studentId = student._id;
+
+    // Generate code if missing (for legacy users)
+    if (!student.parentAccessCode) {
+      let isUnique = false;
+      let newCode = '';
+      
+      while (!isUnique) {
+        newCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+        const existing = await Student.findOne({ parentAccessCode: newCode });
+        if (!existing) isUnique = true;
+      }
+      
+      student = await Student.findByIdAndUpdate(
+        studentId,
+        { parentAccessCode: newCode },
+        { new: true }
+      );
+    }
+
+    const logs = await FoodLog.find({ studentId })
       .sort({ date: -1 })
       .limit(10);
 
@@ -20,7 +48,7 @@ export const getStudentProfile = async (req: AuthRequest, res: Response, next: N
     const startOfToday = new Date();
     startOfToday.setHours(0, 0, 0, 0);
     const dailyLogs = await FoodLog.find({
-      studentId: req.user.studentId,
+      studentId,
       date: { $gte: startOfToday }
     }).lean();
 
@@ -29,7 +57,7 @@ export const getStudentProfile = async (req: AuthRequest, res: Response, next: N
     res.status(200).json({ 
       success: true, 
       data: { 
-        ...student, 
+        ...student.toObject(), 
         logs,
         omsRecommendations: recommendations 
       } 
@@ -107,6 +135,46 @@ export const getNutritionStats = async (req: AuthRequest, res: Response, next: N
     }, {});
 
     res.status(200).json({ success: true, data: stats });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getParentStats = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  const { code } = req.params;
+
+  if (typeof code !== 'string') {
+    return res.status(400).json({ success: false, error: 'Código de acceso inválido' });
+  }
+
+  try {
+    const student = await Student.findOne({ parentAccessCode: code.toUpperCase() }).lean();
+    if (!student) {
+      return res.status(404).json({ success: false, error: 'Código de acceso inválido' });
+    }
+
+    const logs = await FoodLog.find({ studentId: student._id });
+
+    // Aggregate by day
+    const stats = logs.reduce((acc: any, log) => {
+      const dateStr = log.date.toDateString();
+      if (!acc[dateStr]) {
+        acc[dateStr] = { calories: 0, protein: 0, carbs: 0, fat: 0 };
+      }
+      acc[dateStr].calories += log.calories;
+      acc[dateStr].protein += log.protein;
+      acc[dateStr].carbs += log.carbs;
+      acc[dateStr].fat += log.fat;
+      return acc;
+    }, {});
+
+    res.status(200).json({ 
+      success: true, 
+      data: {
+        studentName: `${student.firstName} ${student.lastName}`,
+        stats
+      } 
+    });
   } catch (error) {
     next(error);
   }

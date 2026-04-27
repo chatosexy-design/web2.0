@@ -55,13 +55,25 @@ const MacroLegend = ({ color, label }: any) => (
 const Dashboard: React.FC = () => {
   const { user } = useAuthStore();
   const { stats, fetchStats, loading } = useNutritionStore();
+  const [studentProfile, setStudentProfile] = useState<any>(null);
+  const [profileError, setProfileError] = useState<string | null>(null);
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
 
   useEffect(() => {
     const init = async () => {
-      await fetchStats();
-      setInitialLoading(false);
+      try {
+        const [statsRes, profileRes] = await Promise.all([
+          fetchStats(),
+          api.get('/students/profile')
+        ]);
+        setStudentProfile(profileRes.data.data);
+      } catch (err: any) {
+        console.error('Error loading dashboard data:', err);
+        setProfileError(err.response?.data?.error || 'Error al cargar perfil');
+      } finally {
+        setInitialLoading(false);
+      }
     };
     init();
   }, [fetchStats]);
@@ -101,7 +113,7 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
           
-          <div className="flex flex-wrap gap-6">
+          <div className="flex flex-wrap gap-6 items-center">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white dark:bg-stone-800 rounded-xl flex items-center justify-center text-wine-700 shadow-sm">
                 <GraduationCap className="w-5 h-5" />
@@ -127,6 +139,26 @@ const Dashboard: React.FC = () => {
               <div>
                 <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest">Turno</p>
                 <p className="text-sm font-bold text-stone-900 dark:text-white">{user.student.shift}</p>
+              </div>
+            </div>
+
+            <div className="bg-white dark:bg-stone-800 px-6 py-3 rounded-2xl border-2 border-dashed border-wine-200 dark:border-wine-900/30 flex items-center gap-4 animate-fade-in">
+              <div className="pr-4 border-r border-stone-100 dark:border-stone-700 min-w-[100px]">
+                <p className="text-[10px] font-black text-wine-700 uppercase tracking-widest">Código Parental</p>
+                {studentProfile?.parentAccessCode || user?.student?.parentAccessCode ? (
+                  <p className="text-lg font-black text-stone-900 dark:text-white tracking-widest">
+                    {studentProfile?.parentAccessCode || user?.student?.parentAccessCode}
+                  </p>
+                ) : profileError ? (
+                  <p className="text-[10px] font-bold text-rose-500 uppercase leading-tight">Error al cargar</p>
+                ) : studentProfile ? (
+                  <p className="text-lg font-black text-stone-900 dark:text-white tracking-widest">SIN CÓDIGO</p>
+                ) : (
+                  <div className="h-6 w-20 bg-stone-100 dark:bg-stone-700 animate-pulse rounded mt-1" />
+                )}
+              </div>
+              <div className="text-[9px] text-stone-400 font-bold uppercase tracking-tighter leading-tight max-w-[100px]">
+                Acceso para tus padres
               </div>
             </div>
           </div>

@@ -66,6 +66,19 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
     const student = user.studentId ? await Student.findById(user.studentId) : await Student.findOne({ userId: user._id });
 
+    // Generar código parental si no existe
+    if (student && !student.parentAccessCode) {
+      let isUnique = false;
+      let newCode = '';
+      while (!isUnique) {
+        newCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+        const existing = await Student.findOne({ parentAccessCode: newCode });
+        if (!existing) isUnique = true;
+      }
+      student.parentAccessCode = newCode;
+      await student.save();
+    }
+
     sendTokenResponse(user, student, 200, res);
   } catch (error) {
     next(error);
@@ -96,7 +109,8 @@ const sendTokenResponse = (user: any, student: any, statusCode: number, res: Res
             semester: student.semester,
             specialty: student.specialty,
             shift: student.shift,
-            email: student.email
+            email: student.email,
+            parentAccessCode: student.parentAccessCode
           }
         : null
     },
@@ -108,7 +122,8 @@ const sendTokenResponse = (user: any, student: any, statusCode: number, res: Res
           semester: student.semester,
           specialty: student.specialty,
           shift: student.shift,
-          email: student.email
+          email: student.email,
+          parentAccessCode: student.parentAccessCode
         }
       : null
   });

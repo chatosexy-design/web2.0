@@ -9,6 +9,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Cafeteria from './pages/Cafeteria';
 import Admin from './pages/Admin';
+import ParentPortal from './pages/ParentPortal';
 import { useAuthStore } from './store/auth';
 import { Role } from './types';
 
@@ -35,6 +36,7 @@ const App: React.FC = () => {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/parent-portal" element={<ParentPortal />} />
             
             {/* Private Routes */}
             <Route path="/dashboard" element={

@@ -12,6 +12,7 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { useNutritionStore } from '../store/nutrition';
+import { Flame, Zap, Droplets, Clock } from 'lucide-react';
 import { format, startOfWeek, addDays, isWeekend } from 'date-fns';
 import { es } from 'date-fns/locale';
 
@@ -121,7 +122,17 @@ const CalorieTrackerChart: React.FC = () => {
   };
 
   if (isWeekendNow) {
-    return null; // Hidden during weekends
+    return (
+      <div className="card-premium p-10 animate-fade-in bg-stone-50/50 dark:bg-stone-900/30 border-2 border-dashed border-stone-200 dark:border-stone-800 flex flex-col items-center justify-center text-center space-y-4">
+        <div className="w-16 h-16 bg-stone-100 dark:bg-stone-800 rounded-2xl flex items-center justify-center text-stone-400">
+          <Clock className="w-8 h-8" />
+        </div>
+        <div>
+          <h3 className="text-xl font-black text-stone-400 tracking-tighter uppercase">Descanso de Fin de Semana</h3>
+          <p className="text-stone-400 text-xs font-bold mt-1">La gráfica de seguimiento escolar se reactivará el lunes.</p>
+        </div>
+      </div>
+    );
   }
 
   return (
