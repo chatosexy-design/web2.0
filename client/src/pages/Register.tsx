@@ -12,7 +12,13 @@ const Register: React.FC = () => {
     email: '',
     specialty: '',
     shift: '',
-    password: ''
+    password: '',
+    age: 17,
+    weight: 65,
+    height: 183,
+    sex: 'M',
+    activityLevel: 'moderado',
+    goal: 'mantener'
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -172,6 +178,97 @@ const Register: React.FC = () => {
                 placeholder="••••••••" 
                 className="input-premium pl-16"
               />
+            </div>
+          </div>
+
+          <div className="p-8 bg-stone-50 dark:bg-stone-800/50 rounded-3xl space-y-8 border border-stone-100 dark:border-stone-800">
+            <h3 className="text-xl font-black text-stone-900 dark:text-white flex items-center gap-3">
+              <div className="w-1.5 h-6 bg-wine-600 rounded-full"></div>
+              Perfil Saludable
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="text-left">
+                <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-3 block ml-2">Edad</label>
+                <input 
+                  type="number" 
+                  name="age"
+                  required 
+                  value={formData.age}
+                  onChange={handleChange}
+                  className="input-premium"
+                />
+              </div>
+              <div className="text-left">
+                <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-3 block ml-2">Peso (kg)</label>
+                <input 
+                  type="number" 
+                  name="weight"
+                  required 
+                  value={formData.weight}
+                  onChange={handleChange}
+                  className="input-premium"
+                />
+              </div>
+              <div className="text-left">
+                <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-3 block ml-2">Altura (cm)</label>
+                <input 
+                  type="number" 
+                  name="height"
+                  required 
+                  value={formData.height}
+                  onChange={handleChange}
+                  className="input-premium"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="text-left">
+                <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-3 block ml-2">Sexo</label>
+                <select 
+                  name="sex"
+                  required 
+                  value={formData.sex}
+                  onChange={handleChange}
+                  className="input-premium"
+                >
+                  <option value="M">Masculino</option>
+                  <option value="F">Femenino</option>
+                  <option value="Otro">Otro</option>
+                </select>
+              </div>
+              <div className="text-left">
+                <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-3 block ml-2">Actividad Física</label>
+                <select 
+                  name="activityLevel"
+                  required 
+                  value={formData.activityLevel}
+                  onChange={handleChange}
+                  className="input-premium"
+                >
+                  <option value="sedentario">Sedentario (Poca actividad)</option>
+                  <option value="ligero">Ligero (1-3 días/semana)</option>
+                  <option value="moderado">Moderado (3-5 días/semana)</option>
+                  <option value="activo">Activo (6-7 días/semana)</option>
+                  <option value="muy_activo">Muy Activo (Atleta)</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="text-left">
+              <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-3 block ml-2">Meta Nutricional</label>
+              <select 
+                name="goal"
+                required 
+                value={formData.goal}
+                onChange={handleChange}
+                className="input-premium"
+              >
+                <option value="perder_peso">Perder Peso</option>
+                <option value="mantener">Mantener Peso</option>
+                <option value="ganar_musculo">Ganar Músculo</option>
+              </select>
             </div>
           </div>
 

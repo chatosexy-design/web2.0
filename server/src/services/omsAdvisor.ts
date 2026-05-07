@@ -3,7 +3,6 @@
  * Proporciona diagnósticos y recomendaciones personalizadas para los estudiantes.
  */
 
-import { FoodLogDocument } from '../models/FoodLog';
 import { NutritionalTargets } from './nutritionCalculator';
 
 /**

@@ -17,8 +17,8 @@ const mockUser = {
 } as any;
 
 export const useAuthStore = create<AuthState>((set) => ({
-  user: JSON.parse(localStorage.getItem('user') || JSON.stringify(mockUser)),
-  token: localStorage.getItem('token') || 'mock-token',
+  user: JSON.parse(localStorage.getItem('user') || 'null'),
+  token: localStorage.getItem('token') || null,
   setAuth: (user, token) => {
     localStorage.setItem('user', JSON.stringify(user));
     localStorage.setItem('token', token);

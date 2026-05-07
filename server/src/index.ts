@@ -8,7 +8,6 @@ import cafeteriaRoutes from './routes/cafeteria';
 import adminRoutes from './routes/admin';
 import nutritionRoutes from './routes/nutrition';
 import { errorHandler } from './middleware/error';
-import { connectDB } from './config/db';
 
 dotenv.config();
 
@@ -32,10 +31,9 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
-  await connectDB();
-
   app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`✅ Supabase integration ready`);
   });
 };
 

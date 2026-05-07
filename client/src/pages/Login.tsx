@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Lock, Mail, ArrowRight } from 'lucide-react';
+import { Lock, Mail, ArrowRight, Chrome } from 'lucide-react';
 import api from '../api';
 import { useAuthStore } from '../store/auth';
+import { supabase } from '../lib/supabase';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -12,6 +13,23 @@ const Login: React.FC = () => {
   
   const navigate = useNavigate();
   const { setAuth } = useAuthStore();
+
+  const handleGoogleLogin = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin + '/dashboard',
+          queryParams: {
+            prompt: 'select_account'
+          }
+        }
+      });
+      if (error) throw error;
+    } catch (err: any) {
+      setError(err.message || 'Error al conectar con Google');
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,6 +97,24 @@ const Login: React.FC = () => {
             {loading ? 'Cargando...' : <>Entrar al Sistema <ArrowRight className="w-5 h-5" /></>}
           </button>
         </form>
+
+        <div className="relative my-8">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-stone-200 dark:border-stone-800"></div>
+          </div>
+          <div className="relative flex justify-center text-[10px] uppercase font-black tracking-widest">
+            <span className="bg-white dark:bg-stone-900 px-4 text-stone-400">O también</span>
+          </div>
+        </div>
+
+        <button 
+          onClick={handleGoogleLogin}
+          type="button"
+          className="w-full py-5 px-6 bg-white dark:bg-stone-800 border-2 border-stone-100 dark:border-stone-700 rounded-2xl font-black text-stone-900 dark:text-white flex items-center justify-center gap-4 hover:bg-stone-50 dark:hover:bg-stone-700 transition-all shadow-sm"
+        >
+          <Chrome className="w-5 h-5 text-wine-600" />
+          Continuar con Google
+        </button>
         
         <p className="mt-8 text-sm font-medium text-stone-400">
           ¿No tienes cuenta? <Link to="/register" className="text-wine-700 font-black hover:underline">Regístrate</Link>

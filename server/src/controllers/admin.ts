@@ -1,34 +1,41 @@
 import { Response, NextFunction } from 'express';
-import User from '../models/User';
-import Student from '../models/Student';
-import FoodLog from '../models/FoodLog';
+import { supabase } from '../config/supabase';
 import { AuthRequest } from '../middleware/auth';
 
 export const getDashboardStats = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const totalStudents = await Student.countDocuments();
-    const totalUsers = await User.countDocuments();
-    const totalFoodLogs = await FoodLog.countDocuments();
+    const { count: totalStudents } = await supabase.from('students').select('*', { count: 'exact', head: true });
+    const { count: totalUsers } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
+    const { count: totalFoodLogs } = await supabase.from('food_logs').select('*', { count: 'exact', head: true });
     
-    // Most consumed dishes (top 5) using aggregation
-    const topDishes = await FoodLog.aggregate([
-      { $group: { _id: { dishId: '$dishId', itemName: '$itemName' }, count: { $sum: 1 } } },
-      { $sort: { count: -1 } },
-      { $limit: 5 }
-    ]);
+    // Top platillos consumidos
+    const { data: topDishesData } = await supabase
+      .from('food_logs')
+      .select('item_name, dish_id')
+      .limit(1000); // Obtenemos una muestra para procesar en JS (Supabase free tier no soporta GROUP BY complejo en API directa)
 
-    // Calories per semester (average)
-    const students = await Student.find().lean();
-    const studentIds = students.map(s => s._id);
-    const logs = await FoodLog.find({ studentId: { $in: studentIds } }).lean();
+    const dishCounts = (topDishesData || []).reduce((acc: any, log) => {
+      const key = log.item_name;
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
+    }, {});
 
-    const semesterAverages = students.reduce((acc: any, student: any) => {
+    const topDishes = Object.entries(dishCounts)
+      .map(([name, count]) => ({ _id: { itemName: name }, count }))
+      .sort((a: any, b: any) => b.count - a.count)
+      .slice(0, 5);
+
+    // Promedios por semestre
+    const { data: students } = await supabase.from('students').select('id, semester');
+    const { data: logs } = await supabase.from('food_logs').select('student_id, calories');
+
+    const semesterAverages = (students || []).reduce((acc: any, student: any) => {
       const semester = student.semester;
       if (!acc[semester]) acc[semester] = { total: 0, count: 0 };
       
-      const studentLogs = logs.filter(l => l.studentId.toString() === student._id.toString());
+      const studentLogs = (logs || []).filter(l => l.student_id === student.id);
       studentLogs.forEach(log => {
-        acc[semester].total += log.calories;
+        acc[semester].total += Number(log.calories);
         acc[semester].count++;
       });
       return acc;
@@ -37,9 +44,9 @@ export const getDashboardStats = async (req: AuthRequest, res: Response, next: N
     res.status(200).json({ 
       success: true, 
       data: { 
-        totalStudents, 
-        totalUsers, 
-        totalFoodLogs, 
+        totalStudents: totalStudents || 0, 
+        totalUsers: totalUsers || 0, 
+        totalFoodLogs: totalFoodLogs || 0, 
         topDishes, 
         semesterAverages 
       } 
