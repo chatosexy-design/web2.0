@@ -137,7 +137,7 @@ const Dashboard: React.FC = () => {
     calories: 0, protein: 0, carbs: 0, fat: 0, sugar: 0, sodium: 0, fiber: 0 
   };
   const targets = studentProfile?.nutritionalTargets || {
-    calories: 2000, protein: 75, carbs: 275, fat: 65, sugar: 50, sodium: 2300, fiber: 30, water: 2.5, bmi: 0, bmiCategory: 'Cargando...'
+    calories: 2000, protein: 75, carbs: 275, fat: 65, sugar: 50, sodium: 2300, fiber: 30, water: 2.5, bmi: 0, bmiCategory: 'Calculando...'
   };
 
   const recommendations = studentProfile?.omsRecommendations || [];
@@ -146,107 +146,45 @@ const Dashboard: React.FC = () => {
     weight: studentProfile.weight,
     height: studentProfile.height,
     age: studentProfile.age,
-    sex: studentProfile.sex,
     goal: studentProfile.goal,
-    activityLevel: studentProfile.activity_level
+    firstName: studentProfile.firstName,
+    lastName: studentProfile.lastName,
+    email: studentProfile.email,
+    semester: studentProfile.semester
   } : null;
 
-  // Advanced Visuals Calculations
-  const getWeeklyStats = () => {
-    const dates = Object.keys(stats || {}).sort((a, b) => new Date(b).getTime() - new Date(a).getTime()).slice(0, 7);
-    if (dates.length === 0) return null;
-
-    const totals = dates.reduce((acc: any, date) => {
-      const s = stats![date];
-      return {
-        calories: acc.calories + s.calories,
-        protein: acc.protein + s.protein,
-        carbs: acc.carbs + s.carbs,
-        fat: acc.fat + s.fat,
-        sugar: acc.sugar + s.sugar,
-        sodium: acc.sodium + s.sodium,
-        fiber: acc.fiber + s.fiber
-      };
-    }, { calories: 0, protein: 0, carbs: 0, fat: 0, sugar: 0, sodium: 0, fiber: 0 });
-
-    const averages = {
-      calories: Math.round(totals.calories / dates.length),
-      protein: Math.round(totals.protein / dates.length),
-      carbs: Math.round(totals.carbs / dates.length),
-      fat: Math.round(totals.fat / dates.length),
-      sugar: Math.round(totals.sugar / dates.length),
-      sodium: Math.round(totals.sodium / dates.length),
-      fiber: Math.round(totals.fiber / dates.length)
-    };
-
-    // Calculate alignment score (0-100)
-    const nutrients = ['calories', 'protein', 'carbs', 'fat'];
-    const scores = nutrients.map(n => {
-      const pct = Math.min((averages as any)[n] / (targets as any)[n], 1.2); // Cap at 120%
-      return pct > 1 ? 1 - (pct - 1) : pct; // Penalize overconsumption
-    });
-    const avgScore = Math.round((scores.reduce((a, b) => a + b, 0) / scores.length) * 100);
-
-    // Find extremes
-    const nutrientPcts = nutrients.map(n => ({
-      name: n === 'calories' ? 'Calorías' : n === 'protein' ? 'Proteína' : n === 'carbs' ? 'Carbos' : 'Grasas',
-      pct: (averages as any)[n] / (targets as any)[n]
-    }));
-    const sorted = [...nutrientPcts].sort((a, b) => b.pct - a.pct);
-
-    return { averages, score: avgScore, highest: sorted[0], lowest: sorted[sorted.length - 1], count: dates.length };
-  };
-
-  const weeklyData = getWeeklyStats();
+  const weeklyData = studentProfile?.weeklyStats;
 
   const generatePDFReport = () => {
-    if (!weeklyData) return;
-
     const doc = new jsPDF();
-    const primaryColor = [127, 29, 29]; // wine-900
-
+    
     // Header
-    doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.setFillColor(153, 27, 27); // wine-700
     doc.rect(0, 0, 210, 40, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(22);
     doc.setFont('helvetica', 'bold');
-    doc.text('REPORTE NUTRICIONAL SEMANAL', 20, 25);
-    doc.setFontSize(10);
-    doc.text(`CBTis 75 - Nutrición Inteligente | Generado el ${new Date().toLocaleDateString()}`, 20, 32);
-
-    // Student Info
-    doc.setTextColor(0, 0, 0);
-    doc.setFontSize(14);
-    doc.text('Información del Estudiante', 20, 55);
-    doc.setFontSize(10);
-    doc.text(`Nombre: ${user?.student?.firstName} ${user?.student?.lastName}`, 20, 65);
-    doc.text(`Email: ${user?.student?.email}`, 20, 70);
-    doc.text(`Semestre: ${user?.student?.semester}º`, 20, 75);
-    doc.text(`Meta: ${user?.student?.goal?.replace('_', ' ') || 'Saludable'}`, 20, 80);
-    doc.text(`IMC: ${targets.bmi} (${targets.bmiCategory})`, 20, 85);
-
-    // Summary Table
-    doc.setFontSize(14);
-    doc.text('Resumen de Consumo Promedio', 20, 100);
+    doc.text('CBTIS 75 SANO - REPORTE NUTRICIONAL', 20, 25);
     
-    const tableData = [
-      ['Nutriente', 'Promedio Diario', 'Meta Diaria', 'Estado'],
-      ['Calorías', `${weeklyData.averages.calories} kcal`, `${targets.calories} kcal`, weeklyData.averages.calories > targets.calories ? 'Exceso' : 'Adecuado'],
-      ['Proteína', `${weeklyData.averages.protein}g`, `${targets.protein}g`, weeklyData.averages.protein < targets.protein ? 'Bajo' : 'Adecuado'],
-      ['Carbos', `${weeklyData.averages.carbs}g`, `${targets.carbs}g`, 'Adecuado'],
-      ['Grasas', `${weeklyData.averages.fat}g`, `${targets.fat}g`, 'Adecuado'],
-      ['Azúcares', `${weeklyData.averages.sugar}g`, `${targets.sugar}g`, weeklyData.averages.sugar > targets.sugar ? 'Alto' : 'Adecuado'],
-      ['Sodio', `${weeklyData.averages.sodium}mg`, `${targets.sodium}mg`, 'Adecuado'],
-      ['Fibra', `${weeklyData.averages.fiber}g`, `${targets.fiber}g`, weeklyData.averages.fiber < targets.fiber ? 'Bajo' : 'Adecuado'],
-    ];
-
+    // Student Info
+    doc.setTextColor(50, 50, 50);
+    doc.setFontSize(12);
+    doc.text(`Estudiante: ${studentInfo?.firstName} ${studentInfo?.lastName}`, 20, 55);
+    doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 20, 62);
+    doc.text(`Semestre: ${studentInfo?.semester}º`, 20, 69);
+    
+    // Table
     autoTable(doc, {
-      startY: 110,
-      head: [tableData[0]],
-      body: tableData.slice(1),
-      theme: 'grid',
-      headStyles: { fillColor: primaryColor },
+      startY: 80,
+      head: [['Métrica', 'Consumo Hoy', 'Meta Diaria', 'Estado']],
+      body: [
+        ['Calorías', `${todayStats.calories} kcal`, `${targets.calories} kcal`, todayStats.calories > targets.calories ? 'Excedido' : 'Óptimo'],
+        ['Proteínas', `${todayStats.protein}g`, `${targets.protein}g`, 'En curso'],
+        ['Carbohidratos', `${todayStats.carbs}g`, `${targets.carbs}g`, 'En curso'],
+        ['Grasas', `${todayStats.fat}g`, `${targets.fat}g`, 'En curso'],
+        ['Azúcares', `${todayStats.sugar}g`, `${targets.sugar}g`, todayStats.sugar > targets.sugar ? 'Alto' : 'Bajo'],
+        ['Sodio', `${todayStats.sodium}mg`, `${targets.sodium}mg`, 'Normal'],
+      ],
       styles: { fontSize: 9 }
     });
 
@@ -274,7 +212,7 @@ const Dashboard: React.FC = () => {
     doc.setFontSize(8);
     doc.text('Este reporte apoya el ODS 2: Hambre Cero. Recuerda reducir el desperdicio de alimentos', 25, 272);
 
-    doc.save(`Reporte_Nutricional_${user?.student?.firstName}_${new Date().toISOString().slice(0,10)}.pdf`);
+    doc.save(`Reporte_Nutricional_${studentInfo?.firstName || 'Usuario'}_${new Date().toISOString().slice(0,10)}.pdf`);
   };
 
   const doughnutData = {
@@ -315,13 +253,13 @@ const Dashboard: React.FC = () => {
             <div>
               <div className="flex items-center gap-3">
                 <h2 className="text-3xl font-black text-stone-900 dark:text-white tracking-tighter">
-                  {user?.student?.firstName} {user?.student?.lastName}
+                  {studentInfo?.firstName} {studentInfo?.lastName}
                 </h2>
                 <span className="px-3 py-1 bg-wine-50 text-wine-700 dark:bg-wine-900/30 dark:text-wine-400 rounded-full text-[10px] font-black uppercase tracking-widest">
                   Estudiante CBTis 75
                 </span>
               </div>
-              <p className="text-stone-500 font-bold text-xs mt-1 uppercase tracking-widest">{user?.student?.email}</p>
+              <p className="text-stone-500 font-bold text-xs mt-1 uppercase tracking-widest">{studentInfo?.email}</p>
             </div>
           </div>
           
@@ -330,21 +268,21 @@ const Dashboard: React.FC = () => {
               <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest">Semestre</p>
               <div className="flex items-center gap-2 text-stone-900 dark:text-white">
                 <GraduationCap className="w-4 h-4 text-wine-600" />
-                <span className="font-black">{user?.student?.semester}º</span>
+                <span className="font-black">{studentInfo?.semester}º</span>
               </div>
             </div>
             <div className="space-y-1">
               <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest">Peso / Altura</p>
               <div className="flex items-center gap-2 text-stone-900 dark:text-white">
                 <TrendingUp className="w-4 h-4 text-emerald-500" />
-                <span className="font-black">{studentProfile?.weight}kg / {studentProfile?.height}cm</span>
+                <span className="font-black">{studentInfo?.weight}kg / {studentInfo?.height}cm</span>
               </div>
             </div>
             <div className="space-y-1">
               <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest">Meta</p>
               <div className="flex items-center gap-2 text-stone-900 dark:text-white">
                 <Info className="w-4 h-4 text-amber-500" />
-                <span className="font-black capitalize">{user?.student?.goal?.replace('_', ' ') || 'Saludable'}</span>
+                <span className="font-black capitalize">{studentInfo?.goal?.replace('_', ' ') || 'Saludable'}</span>
               </div>
             </div>
             <div className="bg-white dark:bg-stone-800 px-6 py-4 rounded-[1.5rem] border-2 border-dashed border-wine-100 dark:border-wine-900/30 flex items-center gap-4">

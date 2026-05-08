@@ -4,37 +4,39 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getDashboardStats = void 0;
-const db_1 = __importDefault(require("../config/db"));
+const User_1 = __importDefault(require("../models/User"));
+const Student_1 = __importDefault(require("../models/Student"));
+const FoodLog_1 = __importDefault(require("../models/FoodLog"));
 const getDashboardStats = async (req, res, next) => {
     try {
-        const totalStudents = await db_1.default.student.count();
-        const totalUsers = await db_1.default.user.count();
-        const totalFoodLogs = await db_1.default.foodLog.count();
-        // Most consumed dishes (top 5)
-        const topDishes = await db_1.default.foodLog.groupBy({
-            by: ['dishId', 'itemName'],
-            _count: { dishId: true },
-            orderBy: { _count: { dishId: 'desc' } },
-            take: 5
-        });
-        // Calories per group (average)
-        const groupStats = await db_1.default.student.findMany({
-            include: {
-                logs: {
-                    select: { calories: true }
+        const totalStudents = await Student_1.default.countDocuments();
+        const totalUsers = await User_1.default.countDocuments();
+        const totalFoodLogs = await FoodLog_1.default.countDocuments();
+        // Top platillos consumidos
+        const topDishes = await FoodLog_1.default.aggregate([
+            { $group: { _id: "$itemName", count: { $sum: 1 } } },
+            { $sort: { count: -1 } },
+            { $limit: 5 }
+        ]);
+        // Promedios por semestre
+        const semesterAverages = await Student_1.default.aggregate([
+            {
+                $lookup: {
+                    from: 'foodlogs',
+                    localField: '_id',
+                    foreignField: 'student',
+                    as: 'logs'
+                }
+            },
+            { $unwind: "$logs" },
+            {
+                $group: {
+                    _id: "$semester",
+                    total: { $sum: "$logs.calories" },
+                    count: { $sum: 1 }
                 }
             }
-        });
-        const groupAverages = groupStats.reduce((acc, student) => {
-            const group = student.group;
-            if (!acc[group])
-                acc[group] = { total: 0, count: 0 };
-            student.logs.forEach(log => {
-                acc[group].total += log.calories;
-                acc[group].count++;
-            });
-            return acc;
-        }, {});
+        ]);
         res.status(200).json({
             success: true,
             data: {
@@ -42,7 +44,7 @@ const getDashboardStats = async (req, res, next) => {
                 totalUsers,
                 totalFoodLogs,
                 topDishes,
-                groupAverages
+                semesterAverages
             }
         });
     }

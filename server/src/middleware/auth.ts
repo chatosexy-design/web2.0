@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import type { Role } from '../types/roles';
-import { supabase } from '../config/supabase';
 import { Roles } from '../types/roles';
 
 export interface AuthRequest extends Request {
@@ -31,7 +30,6 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
   }
 
   try {
-    // 1) Intentar JWT interno
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret') as {
       id: string;
       role: string;
@@ -45,31 +43,7 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
     };
     return next();
   } catch (_error) {
-    // 2) Fallback: token de Supabase (Google OAuth / sesión Supabase)
-    const { data, error } = await supabase.auth.getUser(token);
-    if (error || !data.user) {
-      return res.status(401).json({ success: false, error: 'Token inválido' });
-    }
-
-    const userId = data.user.id;
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', userId)
-      .single();
-
-    const { data: student } = await supabase
-      .from('students')
-      .select('id')
-      .eq('user_id', userId)
-      .single();
-
-    req.user = {
-      id: userId,
-      role: normalizeRole(profile?.role),
-      studentId: student?.id
-    };
-    return next();
+    return res.status(401).json({ success: false, error: 'Token inválido o expirado' });
   }
 };
 

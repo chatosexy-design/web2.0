@@ -14,7 +14,7 @@ const Cafeteria: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [newDish, setNewDish] = useState({ name: '', price: 0, autoMacros: true });
   const [consumingId, setConsumingId] = useState<string | null>(null);
-  const [feedbackMessage, setFeedbackMessage] = useState('');
+  const [feedbackMessage, setFeedbackMessage] = useState<{ text: string, type: 'success' | 'error' } | null>(null);
 
   const isStaff = user?.role === Role.CAFETERIA || user?.role === Role.ADMIN;
   const dishesByCategory = dishes.reduce<Record<string, Dish[]>>((acc, dish) => {
@@ -29,7 +29,11 @@ const Cafeteria: React.FC = () => {
   const fetchDishes = async () => {
     try {
       const res = await api.get('/cafeteria');
-      setDishes(res.data.data);
+      const normalized = (res.data.data || []).map((dish: any) => ({
+        ...dish,
+        id: dish.id || dish._id,
+      }));
+      setDishes(normalized);
     } catch (err) {
       console.error(err);
     } finally {
@@ -56,23 +60,28 @@ const Cafeteria: React.FC = () => {
     try {
       setConsumingId(dish.id);
 
-      // Save to backend
-      const res = await api.post('/students/log-ia', { 
-        query: dish.name,
-        mealType: 'almuerzo' // Default for cafeteria consumption
+      // Save to backend using direct dish logging
+      const res = await api.post('/students/log-dish', { 
+        dishId: dish.id,
+        mealType: dish.category?.toLowerCase().includes('desayuno') ? 'desayuno' : 'almuerzo'
       });
 
       // Update store in real-time
-      addLog(res.data.data);
-
-      setFeedbackMessage(`${dish.name} se agregó al historial y dashboard.`);
+      if (res.data.success) {
+        addLog(res.data.data);
+        setFeedbackMessage({ 
+          text: `${dish.name} se agregó al historial y dashboard.`, 
+          type: 'success' 
+        });
+      }
 
       window.setTimeout(() => {
-        setFeedbackMessage('');
+        setFeedbackMessage(null);
       }, 2500);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error al guardar el consumo del platillo:', error);
-      setFeedbackMessage('No se pudo registrar el platillo.');
+      const msg = error.response?.data?.error || 'No se pudo registrar el platillo.';
+      setFeedbackMessage({ text: msg, type: 'error' });
     } finally {
       setConsumingId(null);
     }
@@ -85,7 +94,13 @@ const Cafeteria: React.FC = () => {
           <h2 className="text-5xl font-black text-stone-900 dark:text-white tracking-tighter mb-4">Menú de Cafetería</h2>
           <p className="text-stone-500 dark:text-stone-400 font-medium">Alimentos saludables listos para consumir en el CBT 75.</p>
           {feedbackMessage && (
-            <p className="mt-4 text-sm font-bold text-emerald-600 dark:text-emerald-400">{feedbackMessage}</p>
+            <p className={`mt-4 text-sm font-bold animate-fade-in ${
+              feedbackMessage.type === 'success' 
+                ? 'text-emerald-600 dark:text-emerald-400' 
+                : 'text-rose-600 dark:text-rose-400'
+            }`}>
+              {feedbackMessage.text}
+            </p>
           )}
         </div>
         

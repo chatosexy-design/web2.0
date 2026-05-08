@@ -6,10 +6,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const admin_1 = require("../controllers/admin");
 const auth_1 = require("../middleware/auth");
-const client_1 = require("@prisma/client");
+const roles_1 = require("../types/roles");
 const router = express_1.default.Router();
 router.use(auth_1.protect);
-router.use((0, auth_1.authorize)(client_1.Role.ADMIN));
+router.use((0, auth_1.authorize)(roles_1.Roles.ADMIN));
 router.get('/stats', admin_1.getDashboardStats);
 exports.default = router;
 //# sourceMappingURL=admin.js.map

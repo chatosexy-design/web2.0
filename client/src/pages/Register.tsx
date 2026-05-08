@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { UserPlus, Mail, Lock, User, GraduationCap, BookOpen, Clock, ArrowRight } from 'lucide-react';
 import api from '../api';
 import { useAuthStore } from '../store/auth';
 
 const Register: React.FC = () => {
+  const { user, token } = useAuthStore();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -20,6 +21,21 @@ const Register: React.FC = () => {
     activityLevel: 'moderado',
     goal: 'mantener'
   });
+
+  // Si ya hay un usuario autenticado (por ejemplo, vía Google) pero sin perfil,
+  // pre-llenar los campos disponibles
+  useEffect(() => {
+    if (user && !formData.email) {
+      const names = user.name?.split(' ') || [];
+      setFormData(prev => ({
+        ...prev,
+        email: user.email || '',
+        firstName: names[0] || '',
+        lastName: names.slice(1).join(' ') || '',
+      }));
+    }
+  }, [user]);
+
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
@@ -36,9 +52,12 @@ const Register: React.FC = () => {
     setLoading(true);
 
     try {
-      const res = await api.post('/auth/register', formData);
+      // Si tenemos un token (de Google), lo enviamos para vincular el perfil
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const res = await api.post('/auth/register', formData, { headers });
+      
       if (res.data.success) {
-        setAuth(res.data.user, res.data.token);
+        setAuth(res.data.user, res.data.token || token);
         navigate('/dashboard');
       }
     } catch (err: any) {

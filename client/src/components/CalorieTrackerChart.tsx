@@ -9,6 +9,7 @@ import {
   Tooltip,
   Legend,
   Filler,
+  type ChartOptions,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { useNutritionStore } from '../store/nutrition';
@@ -69,7 +70,7 @@ const CalorieTrackerChart: React.FC = () => {
     };
   }, [stats]);
 
-  const options = {
+  const options: ChartOptions<'line'> = {
     responsive: true,
     maintainAspectRatio: false,
     animation: {
@@ -83,7 +84,7 @@ const CalorieTrackerChart: React.FC = () => {
       tooltip: {
         backgroundColor: '#1c1917',
         titleFont: { size: 12, weight: 'bold' as const },
-        bodyFont: { size: 14, weight: 'black' as const },
+        bodyFont: { size: 14, weight: 900 },
         padding: 12,
         cornerRadius: 12,
         displayColors: false,

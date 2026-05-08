@@ -1,6 +1,8 @@
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Supabase client disabled while using MongoDB
+export const supabase = {
+  auth: {
+    signInWithPassword: () => Promise.resolve({ data: {}, error: { message: 'Auth disabled' } }),
+    signOut: () => Promise.resolve({ error: null }),
+    onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+  }
+} as any;

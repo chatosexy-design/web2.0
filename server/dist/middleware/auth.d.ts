@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { Role } from '@prisma/client';
+import type { Role } from '../types/roles';
 export interface AuthRequest extends Request {
     user?: {
         id: string;
@@ -7,5 +7,5 @@ export interface AuthRequest extends Request {
         studentId?: string;
     };
 }
-export declare const protect: (req: AuthRequest, res: Response, next: NextFunction) => Promise<void>;
-export declare const authorize: (...roles: Role[]) => (req: AuthRequest, res: Response, next: NextFunction) => void;
+export declare const protect: (req: AuthRequest, res: Response, next: NextFunction) => Promise<void | Response<any, Record<string, any>>>;
+export declare const authorize: (...roles: Role[]) => (req: AuthRequest, res: Response, next: NextFunction) => Response<any, Record<string, any>> | undefined;

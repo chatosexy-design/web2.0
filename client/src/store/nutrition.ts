@@ -35,7 +35,8 @@ export const useNutritionStore = create<NutritionState>((set, get) => ({
     }
   },
   addLog: (log: any) => {
-    const dateStr = new Date(log.date || new Date()).toDateString();
+    // Usar la fecha local del navegador para la clave del mapa, igual que en el Dashboard
+    const dateStr = new Date().toDateString();
     const currentStats = get().stats;
     const dayStats = currentStats[dateStr] || { 
       calories: 0, 
@@ -51,13 +52,13 @@ export const useNutritionStore = create<NutritionState>((set, get) => ({
       stats: {
         ...currentStats,
         [dateStr]: {
-          calories: dayStats.calories + (log.calories || 0),
-          protein: dayStats.protein + (log.protein || 0),
-          carbs: dayStats.carbs + (log.carbs || 0),
-          fat: dayStats.fat + (log.fat || 0),
-          sugar: (dayStats.sugar || 0) + (log.sugar || 0),
-          sodium: (dayStats.sodium || 0) + (log.sodium || 0),
-          fiber: (dayStats.fiber || 0) + (log.fiber || 0),
+          calories: dayStats.calories + (Number(log.calories) || 0),
+          protein: dayStats.protein + (Number(log.protein) || 0),
+          carbs: dayStats.carbs + (Number(log.carbs) || 0),
+          fat: dayStats.fat + (Number(log.fat) || 0),
+          sugar: (dayStats.sugar || 0) + (Number(log.sugar) || 0),
+          sodium: (dayStats.sodium || 0) + (Number(log.sodium) || 0),
+          fiber: (dayStats.fiber || 0) + (Number(log.fiber) || 0),
         },
       },
     });

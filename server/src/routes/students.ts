@@ -1,5 +1,5 @@
 import express from 'express';
-import { getStudentProfile, logFoodIA, getNutritionStats, getFoodHistory, getParentStats } from '../controllers/students';
+import { getStudentProfile, logFoodIA, logDish, getNutritionStats, getFoodHistory, getParentStats } from '../controllers/students';
 import { protect, authorize } from '../middleware/auth';
 import { Roles } from '../types/roles';
 
@@ -12,6 +12,7 @@ router.use(authorize(Roles.STUDENT));
 
 router.get('/profile', getStudentProfile);
 router.post('/log-ia', logFoodIA);
+router.post('/log-dish', logDish);
 router.get('/stats', getNutritionStats);
 router.get('/history', getFoodHistory);
 
