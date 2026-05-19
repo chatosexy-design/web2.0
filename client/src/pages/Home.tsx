@@ -12,7 +12,7 @@ const Home: React.FC = () => {
             Come mejor, <br /> vive <span className="text-wine-700">increíble.</span>
           </h1>
           <p className="text-xl text-stone-500 dark:text-stone-400 font-medium mb-12 max-w-md leading-relaxed">
-            Arquitectura moderna para el CBT 75. Análisis nutricional con IA, seguimiento de hábitos y asesoramiento inteligente.
+            Arquitectura moderna para el CBTIS 75. Análisis nutricional con IA, seguimiento de hábitos y asesoramiento inteligente.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link to="/register" className="btn-primary px-10 py-5 flex items-center justify-center gap-3 text-lg">
