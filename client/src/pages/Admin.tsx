@@ -35,9 +35,24 @@ const Admin: React.FC = () => {
     fetchStats();
   }, []);
 
-  if (loading) return <div className="text-center py-20">Cargando estadísticas...</div>;
+  if (loading) return (
+    <div className="flex flex-col items-center justify-center py-40 space-y-4">
+      <div className="w-16 h-16 border-4 border-wine-100 border-t-wine-700 rounded-full animate-spin" />
+      <p className="text-stone-400 font-black uppercase tracking-[0.3em] text-xs">Cargando Panel de Control...</p>
+    </div>
+  );
 
-  return (
+  if (!stats) return (
+    <div className="flex flex-col items-center justify-center py-40 space-y-6">
+      <div className="w-20 h-20 bg-wine-50 text-wine-700 rounded-3xl flex items-center justify-center">
+        <Database className="w-10 h-10" />
+      </div>
+      <div className="text-center">
+        <h3 className="text-2xl font-black text-stone-900 dark:text-white">Sin datos disponibles</h3>
+        <p className="text-stone-500 max-w-xs mx-auto mt-2">No hay estadísticas registradas todavía. Los datos aparecerán cuando los estudiantes empiecen a registrar sus comidas.</p>
+      </div>
+    </div>
+  );
     <div className="max-w-7xl mx-auto space-y-12 animate-slide-up">
       <div className="flex flex-col md:flex-row justify-between items-end gap-8">
         <div>
