@@ -55,10 +55,13 @@ const Navbar: React.FC = () => {
               <Link to="/register" className="px-6 py-2.5 bg-wine-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-wine-700/20 hover:scale-105 transition-transform">Registro</Link>
             </div>
           ) : (
-            <div className="hidden sm:flex items-center gap-3 pl-4 border-l border-stone-200 dark:border-stone-800">
-              <div className="text-right hidden sm:block">
+            <div className="flex items-center gap-3 pl-4 border-l border-stone-200 dark:border-stone-800">
+              <div className="text-right hidden xs:block">
                 <p className="text-xs font-black text-stone-900 dark:text-white uppercase tracking-tighter">{user.name || 'Usuario'}</p>
-                <button onClick={() => { logout(); navigate('/'); }} className="text-[10px] font-bold text-wine-600 hover:underline uppercase flex items-center gap-1">
+                <button 
+                  onClick={() => { logout(); navigate('/'); }} 
+                  className="text-[10px] font-bold text-wine-600 hover:text-wine-700 hover:underline uppercase flex items-center gap-1 transition-colors"
+                >
                   <LogOut className="w-3 h-3" /> Salir
                 </button>
               </div>
