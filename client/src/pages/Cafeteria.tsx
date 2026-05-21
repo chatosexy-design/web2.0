@@ -12,11 +12,74 @@ const Cafeteria: React.FC = () => {
   const [dishes, setDishes] = useState<Dish[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [newDish, setNewDish] = useState({ name: '', price: 0, autoMacros: true });
+  const [editingDish, setEditingDish] = useState<Dish | null>(null);
+  const [newDish, setNewDish] = useState({ 
+    name: '', 
+    price: 0, 
+    description: '', 
+    category: 'Almuerzo',
+    calories: 0,
+    protein: 0,
+    carbs: 0,
+    fat: 0,
+    sugar: 0,
+    sodium: 0,
+    fiber: 0,
+    autoMacros: true 
+  });
   const [consumingId, setConsumingId] = useState<string | null>(null);
   const [feedbackMessage, setFeedbackMessage] = useState<{ text: string, type: 'success' | 'error' } | null>(null);
 
   const isStaff = user?.role === Role.CAFETERIA || user?.role === Role.ADMIN;
+  
+  const resetForm = () => {
+    setNewDish({ 
+      name: '', 
+      price: 0, 
+      description: '', 
+      category: 'Almuerzo',
+      calories: 0,
+      protein: 0,
+      carbs: 0,
+      fat: 0,
+      sugar: 0,
+      sodium: 0,
+      fiber: 0,
+      autoMacros: true 
+    });
+    setEditingDish(null);
+  };
+
+  const handleEdit = (dish: Dish) => {
+    setEditingDish(dish);
+    setNewDish({
+      name: dish.name,
+      price: dish.price,
+      description: dish.description || '',
+      category: dish.category || 'Almuerzo',
+      calories: dish.calories || 0,
+      protein: dish.protein || 0,
+      carbs: dish.carbs || 0,
+      fat: dish.fat || 0,
+      sugar: dish.sugar || 0,
+      sodium: dish.sodium || 0,
+      fiber: dish.fiber || 0,
+      autoMacros: false
+    });
+    setShowModal(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm('¿Estás seguro de que deseas eliminar este platillo?')) return;
+    try {
+      await api.delete(`/cafeteria/${id}`);
+      setFeedbackMessage({ text: 'Platillo eliminado correctamente', type: 'success' });
+      fetchDishes();
+    } catch (err: any) {
+      console.error(err);
+      setFeedbackMessage({ text: 'Error al eliminar platillo', type: 'error' });
+    }
+  };
   const dishesByCategory = dishes.reduce<Record<string, Dish[]>>((acc, dish) => {
     const category = dish.category || 'Otros';
     if (!acc[category]) {
@@ -45,14 +108,22 @@ const Cafeteria: React.FC = () => {
     fetchDishes();
   }, []);
 
-  const handleCreate = async (e: React.FormEvent) => {
+  const handleCreateOrUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await api.post('/cafeteria', newDish);
+      if (editingDish) {
+        await api.put(`/cafeteria/${editingDish.id}`, newDish);
+        setFeedbackMessage({ text: 'Platillo actualizado', type: 'success' });
+      } else {
+        await api.post('/cafeteria', newDish);
+        setFeedbackMessage({ text: 'Platillo creado', type: 'success' });
+      }
       setShowModal(false);
+      resetForm();
       fetchDishes();
     } catch (err) {
       console.error(err);
+      setFeedbackMessage({ text: 'Error al guardar platillo', type: 'error' });
     }
   };
 
@@ -151,8 +222,18 @@ const Cafeteria: React.FC = () => {
                         <span className="text-2xl font-black text-wine-700 dark:text-wine-400">${dish.price}</span>
                         {isStaff && (
                           <div className="flex gap-2 mt-2">
-                            <button className="p-2 hover:bg-stone-100 rounded-lg dark:hover:bg-stone-800"><Edit2 className="w-4 h-4 text-stone-400" /></button>
-                            <button className="p-2 hover:bg-rose-50 rounded-lg dark:hover:bg-rose-900/30"><Trash2 className="w-4 h-4 text-rose-400" /></button>
+                            <button 
+                              onClick={() => handleEdit(dish)}
+                              className="p-2 hover:bg-stone-100 rounded-lg dark:hover:bg-stone-800 transition-colors"
+                            >
+                              <Edit2 className="w-4 h-4 text-stone-400" />
+                            </button>
+                            <button 
+                              onClick={() => handleDelete(dish.id)}
+                              className="p-2 hover:bg-rose-50 rounded-lg dark:hover:bg-rose-900/30 transition-colors"
+                            >
+                              <Trash2 className="w-4 h-4 text-rose-400" />
+                            </button>
                           </div>
                         )}
                       </div>
@@ -182,41 +263,100 @@ const Cafeteria: React.FC = () => {
         </div>
       )}
 
-      {/* Modal logic omitted for brevity, but UI ready */}
+      {/* Modal logic */}
       {showModal && (
-        <div className="fixed inset-0 bg-stone-900/50 backdrop-blur-sm z-[100] flex items-center justify-center p-6">
-          <div className="card-premium p-10 max-w-md w-full animate-slide-up">
-            <h3 className="text-3xl font-black mb-6">Nuevo Platillo</h3>
-            <form onSubmit={handleCreate} className="space-y-6">
-              <div className="text-left">
-                <label className="text-xs font-black text-stone-400 uppercase tracking-widest mb-3 block ml-2">Nombre</label>
-                <input 
-                  type="text" 
-                  required 
-                  value={newDish.name}
-                  onChange={(e) => setNewDish({ ...newDish, name: e.target.value })}
-                  placeholder="Ej: Enchiladas Verdes" 
-                  className="input-premium"
-                />
+        <div className="fixed inset-0 bg-stone-900/50 backdrop-blur-sm z-[100] flex items-center justify-center p-6 overflow-y-auto">
+          <div className="card-premium p-8 max-w-2xl w-full animate-slide-up my-auto">
+            <div className="flex justify-between items-center mb-8">
+              <h3 className="text-3xl font-black">{editingDish ? 'Editar Platillo' : 'Nuevo Platillo'}</h3>
+              <button onClick={() => { setShowModal(false); resetForm(); }} className="p-2 hover:bg-stone-100 rounded-full">
+                <Trash2 className="w-6 h-6 text-stone-400 rotate-45" />
+              </button>
+            </div>
+            
+            <form onSubmit={handleCreateOrUpdate} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div className="text-left">
+                  <label className="text-xs font-black text-stone-400 uppercase tracking-widest mb-2 block ml-2">Nombre</label>
+                  <input 
+                    type="text" required value={newDish.name}
+                    onChange={(e) => setNewDish({ ...newDish, name: e.target.value })}
+                    placeholder="Ej: Enchiladas Verdes" className="input-premium"
+                  />
+                </div>
+                <div className="text-left">
+                  <label className="text-xs font-black text-stone-400 uppercase tracking-widest mb-2 block ml-2">Precio ($)</label>
+                  <input 
+                    type="number" required value={newDish.price}
+                    onChange={(e) => setNewDish({ ...newDish, price: Number(e.target.value) })}
+                    placeholder="45" className="input-premium"
+                  />
+                </div>
+                <div className="text-left">
+                  <label className="text-xs font-black text-stone-400 uppercase tracking-widest mb-2 block ml-2">Categoría</label>
+                  <select 
+                    value={newDish.category}
+                    onChange={(e) => setNewDish({ ...newDish, category: e.target.value })}
+                    className="input-premium appearance-none"
+                  >
+                    <option value="Desayuno">Desayuno</option>
+                    <option value="Almuerzo">Almuerzo</option>
+                    <option value="Bebidas">Bebidas</option>
+                    <option value="Snacks">Snacks</option>
+                  </select>
+                </div>
+                <div className="text-left">
+                  <label className="text-xs font-black text-stone-400 uppercase tracking-widest mb-2 block ml-2">Descripción</label>
+                  <textarea 
+                    value={newDish.description}
+                    onChange={(e) => setNewDish({ ...newDish, description: e.target.value })}
+                    placeholder="Descripción breve..."
+                    className="input-premium h-24 resize-none"
+                  />
+                </div>
               </div>
-              <div className="text-left">
-                <label className="text-xs font-black text-stone-400 uppercase tracking-widest mb-3 block ml-2">Precio</label>
-                <input 
-                  type="number" 
-                  required 
-                  value={newDish.price}
-                  onChange={(e) => setNewDish({ ...newDish, price: Number(e.target.value) })}
-                  placeholder="45" 
-                  className="input-premium"
-                />
-              </div>
-              <div className="flex items-center gap-3 p-4 bg-wine-50 rounded-2xl dark:bg-wine-900/30">
-                <Zap className="w-5 h-5 text-wine-700" />
-                <span className="text-sm font-bold text-wine-700">Calcular macros con IA automáticamente</span>
-              </div>
-              <div className="flex gap-4">
-                <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-4 font-bold text-stone-400">Cancelar</button>
-                <button type="submit" className="flex-1 btn-primary py-4">Crear</button>
+
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-left">
+                    <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-1 block">Calorías</label>
+                    <input type="number" value={newDish.calories} onChange={(e) => setNewDish({ ...newDish, calories: Number(e.target.value) })} className="input-premium py-2 px-4" />
+                  </div>
+                  <div className="text-left">
+                    <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-1 block">Proteína (g)</label>
+                    <input type="number" value={newDish.protein} onChange={(e) => setNewDish({ ...newDish, protein: Number(e.target.value) })} className="input-premium py-2 px-4" />
+                  </div>
+                  <div className="text-left">
+                    <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-1 block">Carbos (g)</label>
+                    <input type="number" value={newDish.carbs} onChange={(e) => setNewDish({ ...newDish, carbs: Number(e.target.value) })} className="input-premium py-2 px-4" />
+                  </div>
+                  <div className="text-left">
+                    <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-1 block">Grasas (g)</label>
+                    <input type="number" value={newDish.fat} onChange={(e) => setNewDish({ ...newDish, fat: Number(e.target.value) })} className="input-premium py-2 px-4" />
+                  </div>
+                  <div className="text-left">
+                    <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-1 block">Azúcar (g)</label>
+                    <input type="number" value={newDish.sugar} onChange={(e) => setNewDish({ ...newDish, sugar: Number(e.target.value) })} className="input-premium py-2 px-4" />
+                  </div>
+                  <div className="text-left">
+                    <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-1 block">Sodio (mg)</label>
+                    <input type="number" value={newDish.sodium} onChange={(e) => setNewDish({ ...newDish, sodium: Number(e.target.value) })} className="input-premium py-2 px-4" />
+                  </div>
+                  <div className="text-left">
+                    <label className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-1 block">Fibra (g)</label>
+                    <input type="number" value={newDish.fiber} onChange={(e) => setNewDish({ ...newDish, fiber: Number(e.target.value) })} className="input-premium py-2 px-4" />
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-3 p-4 bg-wine-50 rounded-2xl dark:bg-wine-900/30">
+                  <Zap className="w-5 h-5 text-wine-700" />
+                  <span className="text-[10px] font-bold text-wine-700 uppercase">Cálculo IA activado por defecto</span>
+                </div>
+
+                <div className="flex gap-4 pt-4">
+                  <button type="button" onClick={() => { setShowModal(false); resetForm(); }} className="flex-1 py-4 font-bold text-stone-400">Cancelar</button>
+                  <button type="submit" className="flex-1 btn-primary py-4">{editingDish ? 'Actualizar' : 'Crear'}</button>
+                </div>
               </div>
             </form>
           </div>

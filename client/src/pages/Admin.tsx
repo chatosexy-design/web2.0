@@ -53,6 +53,8 @@ const Admin: React.FC = () => {
       </div>
     </div>
   );
+
+  return (
     <div className="max-w-7xl mx-auto space-y-12 animate-slide-up">
       <div className="flex flex-col md:flex-row justify-between items-end gap-8">
         <div>
