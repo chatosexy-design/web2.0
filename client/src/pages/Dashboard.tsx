@@ -36,7 +36,7 @@ ChartJS.register(
   Legend
 );
 
-const ProgressBar = ({ label, current, target, color, unit = 'g' }: any) => {
+const ProgressBar = ({ label, current, target, color, textColor, unit = 'g' }: any) => {
   const percentage = Math.min(Math.round((current / target) * 100), 100);
   const isOver = current > target;
   
@@ -44,13 +44,13 @@ const ProgressBar = ({ label, current, target, color, unit = 'g' }: any) => {
     <div className="space-y-3">
       <div className="flex flex-col items-center">
         <div className="flex items-center gap-1 text-[10px] font-black text-stone-900 dark:text-white">
-          <span>{Math.round(current)}{unit}</span>
+          <span className={isOver ? 'text-rose-600 font-black' : ''}>{Math.round(current)}{unit}</span>
           <span className="text-stone-300">/</span>
           <span className="text-stone-400">{target}{unit}</span>
         </div>
         <div className="flex items-center gap-2">
           <div className={`w-1.5 h-1.5 rounded-full ${color}`}></div>
-          <span className="text-[9px] font-black text-stone-400 uppercase tracking-widest">{label}</span>
+          <span className={`text-[10px] font-black uppercase tracking-widest ${textColor || 'text-stone-400'}`}>{label}</span>
         </div>
       </div>
       <div className="h-2 bg-stone-100 dark:bg-stone-800 rounded-full overflow-hidden shadow-inner">
@@ -345,10 +345,10 @@ const Dashboard: React.FC = () => {
           Métricas de Hoy
         </h3>
         <div className="flex-1 space-y-8 md:space-y-10 flex flex-col justify-center">
-          <ProgressBar label="Calorías" current={todayStats.calories} target={targets.calories} color="bg-wine-700" unit="kcal" />
-          <ProgressBar label="Proteínas" current={todayStats.protein} target={targets.protein} color="bg-emerald-500" />
-          <ProgressBar label="Carbohidratos" current={todayStats.carbs} target={targets.carbs} color="bg-amber-500" />
-          <ProgressBar label="Grasas" current={todayStats.fat} target={targets.fat} color="bg-rose-500" />
+          <ProgressBar label="Calorías" current={todayStats.calories} target={targets.calories} color="bg-wine-700" textColor="text-wine-700" unit="kcal" />
+          <ProgressBar label="Proteínas" current={todayStats.protein} target={targets.protein} color="bg-emerald-500" textColor="text-emerald-600" />
+          <ProgressBar label="Carbohidratos" current={todayStats.carbs} target={targets.carbs} color="bg-amber-500" textColor="text-amber-600" />
+          <ProgressBar label="Grasas" current={todayStats.fat} target={targets.fat} color="bg-rose-500" textColor="text-rose-600" />
         </div>
       </div>
 
@@ -358,9 +358,9 @@ const Dashboard: React.FC = () => {
           Semáforo de Salud
         </h3>
         <div className="flex-1 space-y-8 md:space-y-10 flex flex-col justify-center">
-          <ProgressBar label="Azúcares" current={todayStats.sugar} target={targets.sugar} color="bg-amber-400" />
-          <ProgressBar label="Sodio" current={todayStats.sodium} target={targets.sodium} color="bg-rose-400" unit="mg" />
-          <ProgressBar label="Fibra" current={todayStats.fiber} target={targets.fiber} color="bg-emerald-400" />
+          <ProgressBar label="Azúcares" current={todayStats.sugar} target={targets.sugar} color="bg-amber-400" textColor="text-amber-500" />
+          <ProgressBar label="Sodio" current={todayStats.sodium} target={targets.sodium} color="bg-rose-400" textColor="text-rose-500" unit="mg" />
+          <ProgressBar label="Fibra" current={todayStats.fiber} target={targets.fiber} color="bg-emerald-400" textColor="text-emerald-500" />
           
           <div className="mt-4 p-4 md:p-5 bg-stone-50 dark:bg-stone-800/50 rounded-2xl border border-stone-100 dark:border-stone-700">
             <div className="flex items-center gap-3">
@@ -416,23 +416,23 @@ const Dashboard: React.FC = () => {
       {/* Column 4: IMC & Mascot */}
       <div className="space-y-6 md:space-y-8 order-4 md:col-span-2 lg:col-span-1">
         {/* IMC Card */}
-            <div className="card-premium p-6 md:p-8 bg-gradient-to-br from-wine-600 to-wine-800 text-white relative overflow-hidden group">
+            <div className="card-premium p-6 md:p-8 bg-stone-50 dark:bg-stone-900/40 text-stone-900 dark:text-white relative overflow-hidden group border-2 border-wine-100">
               <div className="relative z-10">
-                <p className="text-[10px] font-black text-wine-100 uppercase tracking-widest mb-1">Índice de Masa Corporal</p>
+                <p className="text-[10px] font-black text-wine-700 dark:text-wine-400 uppercase tracking-widest mb-1">Índice de Masa Corporal</p>
                 <h4 className="text-3xl md:text-4xl font-black mb-1">{targets.bmi}</h4>
-                <p className="text-[10px] md:text-xs font-bold text-wine-200 uppercase tracking-widest mb-4">{targets.bmiCategory}</p>
+                <p className="text-[10px] md:text-xs font-bold text-stone-500 dark:text-stone-400 uppercase tracking-widest mb-4">{targets.bmiCategory}</p>
                 
-                <div className="w-full h-1.5 bg-white/20 rounded-full overflow-hidden mt-6">
+                <div className="w-full h-1.5 bg-stone-200 dark:bg-stone-800 rounded-full overflow-hidden mt-6 shadow-inner">
                   <div 
-                    className="h-full bg-white transition-all duration-1000" 
+                    className="h-full bg-wine-600 transition-all duration-1000" 
                     style={{ width: `${Math.min((targets.bmi / 40) * 100, 100)}%` }}
                   />
                 </div>
-                <p className="text-[9px] font-medium text-wine-200 mt-2">
+                <p className="text-[9px] font-bold text-stone-400 mt-2">
                   Basado en {studentInfo?.weight}kg y {studentInfo?.height}cm.
                 </p>
               </div>
-              <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
+              <div className="absolute -right-8 -top-8 w-32 h-32 bg-wine-50/50 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
             </div>
 
         {/* PDF Report Button Card */}
