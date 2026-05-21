@@ -20,7 +20,7 @@ export interface NutritionData {
 export const analyzeFoodIA = async (query: string | ExtractedFood[]): Promise<NutritionData> => {
   if (!SPOONACULAR_API_KEY) {
     // Mock simulation for production readiness (if no key provided)
-    console.warn('⚠️ No Spoonacular API Key found. Using mock simulation.');
+    console.warn(' No Spoonacular API Key found. Using mock simulation.');
     const name = typeof query === 'string' ? query : query.map(f => `${f.quantity} ${f.item}`).join(', ');
     const warnings = Array.isArray(query) ? query.flatMap(f => f.warnings || []) : ['Análisis simulado'];
     const alternatives = Array.isArray(query) ? query.flatMap(f => f.alternatives || []) : ['Fruta fresca', 'Agua'];

@@ -237,11 +237,11 @@ const Dashboard: React.FC = () => {
   );
 
   return (
-    <div className="max-w-7xl mx-auto space-y-10 animate-slide-up pb-20">
+    <div className="max-w-7xl mx-auto space-y-6 md:space-y-10 animate-slide-up pb-20 px-4 sm:px-6">
       {/* Header Profile Section */}
-      <div className="card-premium p-8 bg-stone-50 dark:bg-stone-900/50 border-wine-100/50">
-        <div className="flex flex-col xl:flex-row gap-10 items-center justify-between">
-          <div className="flex items-center gap-6">
+      <div className="card-premium p-6 md:p-8 bg-stone-50 dark:bg-stone-900/50 border-wine-100/50">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
             <div className="relative group">
               <div className="w-20 h-20 bg-wine-700 text-white rounded-[2rem] flex items-center justify-center font-black text-3xl shadow-xl transform group-hover:rotate-12 transition-transform duration-500">
                 {(user?.student?.firstName?.[0] || 'U')}{(user?.student?.lastName?.[0] || '')}
@@ -251,8 +251,8 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
             <div>
-              <div className="flex items-center gap-3">
-                <h2 className="text-3xl font-black text-stone-900 dark:text-white tracking-tighter">
+              <div className="flex flex-col sm:flex-row items-center gap-3">
+                <h2 className="text-2xl md:text-3xl font-black text-stone-900 dark:text-white tracking-tighter">
                   {studentInfo?.firstName} {studentInfo?.lastName}
                 </h2>
                 <span className="px-3 py-1 bg-wine-50 text-wine-700 dark:bg-wine-900/30 dark:text-wine-400 rounded-full text-[10px] font-black uppercase tracking-widest">
@@ -263,48 +263,48 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="space-y-1">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 w-full lg:w-auto">
+            <div className="space-y-1 bg-white dark:bg-stone-800/40 p-3 rounded-2xl lg:bg-transparent lg:p-0">
               <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest">Semestre</p>
               <div className="flex items-center gap-2 text-stone-900 dark:text-white">
                 <GraduationCap className="w-4 h-4 text-wine-600" />
                 <span className="font-black">{studentInfo?.semester}º</span>
               </div>
             </div>
-            <div className="space-y-1">
+            <div className="space-y-1 bg-white dark:bg-stone-800/40 p-3 rounded-2xl lg:bg-transparent lg:p-0">
               <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest">Peso / Altura</p>
               <div className="flex items-center gap-2 text-stone-900 dark:text-white">
                 <TrendingUp className="w-4 h-4 text-emerald-500" />
-                <span className="font-black">{studentInfo?.weight}kg / {studentInfo?.height}cm</span>
+                <span className="font-black text-xs sm:text-base">{studentInfo?.weight}kg / {studentInfo?.height}cm</span>
               </div>
             </div>
-            <div className="space-y-1">
+            <div className="space-y-1 bg-white dark:bg-stone-800/40 p-3 rounded-2xl lg:bg-transparent lg:p-0">
               <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest">Meta</p>
               <div className="flex items-center gap-2 text-stone-900 dark:text-white">
                 <Info className="w-4 h-4 text-amber-500" />
-                <span className="font-black capitalize">{studentInfo?.goal?.replace('_', ' ') || 'Saludable'}</span>
+                <span className="font-black capitalize text-xs sm:text-base">{studentInfo?.goal?.replace('_', ' ') || 'Saludable'}</span>
               </div>
             </div>
-            <div className="bg-white dark:bg-stone-800 px-6 py-4 rounded-[1.5rem] border-2 border-dashed border-wine-100 dark:border-wine-900/30 flex items-center gap-4">
-              <div>
+            <div className="bg-white dark:bg-stone-800 px-4 py-3 md:px-6 md:py-4 rounded-[1.5rem] border-2 border-dashed border-wine-100 dark:border-wine-900/30 flex items-center justify-center lg:justify-start gap-4">
+              <div className="text-center lg:text-left">
                 <p className="text-[9px] font-black text-wine-700 uppercase tracking-widest">Código Parental</p>
-                <p className="text-lg font-black text-stone-900 dark:text-white tracking-widest leading-none mt-1">
+                <p className="text-base md:text-lg font-black text-stone-900 dark:text-white tracking-widest leading-none mt-1">
                   {studentProfile?.parentAccessCode || '---'}
                 </p>
               </div>
             </div>
           </div>
+        </div>
       </div>
-    </div>
 
     {/* Header Stats Grid */}
     {weeklyData && (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-slide-up">
-        <div className="card-premium p-6 bg-white dark:bg-stone-900/40 border-l-4 border-emerald-500">
-          <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-1">Nivel General</p>
-          <div className="flex items-end justify-between">
-            <h4 className="text-3xl font-black text-stone-900 dark:text-white">{weeklyData.score}%</h4>
-            <span className={`text-[10px] font-black px-2 py-1 rounded-md ${
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 animate-slide-up">
+        <div className="card-premium p-4 md:p-6 bg-white dark:bg-stone-900/40 border-l-4 border-emerald-500">
+          <p className="text-[9px] md:text-[10px] font-black text-stone-400 uppercase tracking-widest mb-1">Nivel General</p>
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+            <h4 className="text-2xl md:text-3xl font-black text-stone-900 dark:text-white">{weeklyData.score}%</h4>
+            <span className={`text-[9px] md:text-[10px] font-black px-2 py-1 rounded-md w-fit ${
               weeklyData.score > 80 ? 'bg-emerald-100 text-emerald-700' : 
               weeklyData.score > 50 ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'
             }`}>
@@ -312,39 +312,39 @@ const Dashboard: React.FC = () => {
             </span>
           </div>
         </div>
-        <div className="card-premium p-6 bg-white dark:bg-stone-900/40 border-l-4 border-wine-500">
-          <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-1">Promedio Calórico</p>
+        <div className="card-premium p-4 md:p-6 bg-white dark:bg-stone-900/40 border-l-4 border-wine-500">
+          <p className="text-[9px] md:text-[10px] font-black text-stone-400 uppercase tracking-widest mb-1">Promedio Calórico</p>
           <div className="flex items-end justify-between">
-            <h4 className="text-3xl font-black text-stone-900 dark:text-white">{weeklyData.averages.calories}</h4>
-            <span className="text-[10px] font-bold text-stone-400 mb-1">kcal / día</span>
+            <h4 className="text-2xl md:text-3xl font-black text-stone-900 dark:text-white">{weeklyData.averages.calories}</h4>
+            <span className="text-[9px] md:text-[10px] font-bold text-stone-400 mb-1">kcal / día</span>
           </div>
         </div>
-        <div className="card-premium p-6 bg-white dark:bg-stone-900/40 border-l-4 border-amber-500">
-          <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-1">Nutriente más alto</p>
+        <div className="card-premium p-4 md:p-6 bg-white dark:bg-stone-900/40 border-l-4 border-amber-500">
+          <p className="text-[9px] md:text-[10px] font-black text-stone-400 uppercase tracking-widest mb-1">Nutriente más alto</p>
           <div className="flex items-end justify-between">
-            <h4 className="text-xl font-black text-stone-900 dark:text-white">{weeklyData.highest.name}</h4>
-            <span className="text-[10px] font-bold text-amber-600">{(weeklyData.highest.pct * 100).toFixed(0)}% meta</span>
+            <h4 className="text-base md:text-xl font-black text-stone-900 dark:text-white">{weeklyData.highest.name}</h4>
+            <span className="text-[9px] md:text-[10px] font-bold text-amber-600">{(weeklyData.highest.pct * 100).toFixed(0)}%</span>
           </div>
         </div>
-        <div className="card-premium p-6 bg-white dark:bg-stone-900/40 border-l-4 border-sky-500">
-          <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-1">Días Registrados</p>
+        <div className="card-premium p-4 md:p-6 bg-white dark:bg-stone-900/40 border-l-4 border-sky-500">
+          <p className="text-[9px] md:text-[10px] font-black text-stone-400 uppercase tracking-widest mb-1">Días Registrados</p>
           <div className="flex items-end justify-between">
-            <h4 className="text-3xl font-black text-stone-900 dark:text-white">{weeklyData.count}</h4>
-            <span className="text-[10px] font-bold text-stone-400 mb-1">esta semana</span>
+            <h4 className="text-2xl md:text-3xl font-black text-stone-900 dark:text-white">{weeklyData.count}</h4>
+            <span className="text-[9px] md:text-[10px] font-bold text-stone-400 mb-1">esta semana</span>
           </div>
         </div>
       </div>
     )}
 
-    {/* Main Dashboard Layout - 4 Column Grid for Desktop */}
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+    {/* Main Dashboard Layout - Responsive Grid */}
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
       
-      {/* Column 1: Métricas de Hoy (Vertical) */}
-      <div className="card-premium p-8 bg-white dark:bg-stone-900/40 flex flex-col">
-        <h3 className="text-lg font-black text-stone-900 dark:text-white tracking-tighter mb-8 text-center">
+      {/* Column 1: Métricas de Hoy */}
+      <div className="card-premium p-6 md:p-8 bg-white dark:bg-stone-900/40 flex flex-col order-1">
+        <h3 className="text-lg font-black text-stone-900 dark:text-white tracking-tighter mb-6 md:mb-8 text-center">
           Métricas de Hoy
         </h3>
-        <div className="flex-1 space-y-10 flex flex-col justify-center">
+        <div className="flex-1 space-y-8 md:space-y-10 flex flex-col justify-center">
           <ProgressBar label="Calorías" current={todayStats.calories} target={targets.calories} color="bg-wine-700" unit="kcal" />
           <ProgressBar label="Proteínas" current={todayStats.protein} target={targets.protein} color="bg-emerald-500" />
           <ProgressBar label="Carbohidratos" current={todayStats.carbs} target={targets.carbs} color="bg-amber-500" />
@@ -352,58 +352,58 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Column 2: Semáforo de Salud (Vertical) */}
-      <div className="card-premium p-8 bg-white dark:bg-stone-900/40 flex flex-col">
-        <h3 className="text-lg font-black text-stone-900 dark:text-white tracking-tighter mb-8 text-center">
+      {/* Column 2: Semáforo de Salud */}
+      <div className="card-premium p-6 md:p-8 bg-white dark:bg-stone-900/40 flex flex-col order-2">
+        <h3 className="text-lg font-black text-stone-900 dark:text-white tracking-tighter mb-6 md:mb-8 text-center">
           Semáforo de Salud
         </h3>
-        <div className="flex-1 space-y-10 flex flex-col justify-center">
+        <div className="flex-1 space-y-8 md:space-y-10 flex flex-col justify-center">
           <ProgressBar label="Azúcares" current={todayStats.sugar} target={targets.sugar} color="bg-amber-400" />
           <ProgressBar label="Sodio" current={todayStats.sodium} target={targets.sodium} color="bg-rose-400" unit="mg" />
           <ProgressBar label="Fibra" current={todayStats.fiber} target={targets.fiber} color="bg-emerald-400" />
           
-          <div className="mt-4 p-5 bg-stone-50 dark:bg-stone-800/50 rounded-2xl border border-stone-100 dark:border-stone-700">
+          <div className="mt-4 p-4 md:p-5 bg-stone-50 dark:bg-stone-800/50 rounded-2xl border border-stone-100 dark:border-stone-700">
             <div className="flex items-center gap-3">
               <Droplets className="w-6 h-6 text-sky-500" />
               <div>
                 <p className="text-[9px] font-black text-stone-400 uppercase tracking-widest leading-none">Hidratación Meta</p>
-                <p className="text-lg font-black text-stone-900 dark:text-white mt-1">{targets.water} Litros</p>
+                <p className="text-lg font-black text-stone-900 dark:text-white mt-1">{targets.water} L</p>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Column 3: Distribución de Hoy (Wide Column) */}
-      <div className="card-premium p-8 text-center bg-white dark:bg-stone-900/40 flex flex-col items-center">
-        <h3 className="text-xl font-black text-stone-900 dark:text-white tracking-tighter mb-8">
-          Distribución de Hoy
+      {/* Column 3: Distribución de Hoy */}
+      <div className="card-premium p-6 md:p-8 text-center bg-white dark:bg-stone-900/40 flex flex-col items-center order-3 md:col-span-2 lg:col-span-1">
+        <h3 className="text-xl font-black text-stone-900 dark:text-white tracking-tighter mb-6 md:mb-8">
+          Distribución
         </h3>
         
-        <div className="relative w-64 h-64 mb-8">
+        <div className="relative w-48 h-48 md:w-64 md:h-64 mb-6 md:mb-8">
           <Doughnut data={doughnutData} options={{ cutout: '82%', plugins: { legend: { display: false } } }} />
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
             <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest">Macros</p>
-            <p className="text-2xl font-black text-stone-900 dark:text-white">Análisis</p>
+            <p className="text-xl md:text-2xl font-black text-stone-900 dark:text-white">Análisis</p>
           </div>
         </div>
 
-        <div className="w-full space-y-3">
-          <div className="flex items-center justify-between p-4 bg-stone-50 dark:bg-stone-800/50 rounded-2xl border border-stone-100 dark:border-stone-700">
+        <div className="w-full space-y-2 md:space-y-3">
+          <div className="flex items-center justify-between p-3 md:p-4 bg-stone-50 dark:bg-stone-800/50 rounded-2xl border border-stone-100 dark:border-stone-700">
             <div className="flex items-center gap-3">
               <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
               <span className="text-[10px] font-black text-stone-600 dark:text-stone-400 uppercase tracking-widest">Proteína</span>
             </div>
             <span className="text-sm font-black text-stone-900 dark:text-white">{Math.round(todayStats.protein)}g</span>
           </div>
-          <div className="flex items-center justify-between p-4 bg-stone-50 dark:bg-stone-800/50 rounded-2xl border border-stone-100 dark:border-stone-700">
+          <div className="flex items-center justify-between p-3 md:p-4 bg-stone-50 dark:bg-stone-800/50 rounded-2xl border border-stone-100 dark:border-stone-700">
             <div className="flex items-center gap-3">
               <div className="w-3 h-3 rounded-full bg-amber-500"></div>
               <span className="text-[10px] font-black text-stone-600 dark:text-stone-400 uppercase tracking-widest">Carbos</span>
             </div>
             <span className="text-sm font-black text-stone-900 dark:text-white">{Math.round(todayStats.carbs)}g</span>
           </div>
-          <div className="flex items-center justify-between p-4 bg-stone-50 dark:bg-stone-800/50 rounded-2xl border border-stone-100 dark:border-stone-700">
+          <div className="flex items-center justify-between p-3 md:p-4 bg-stone-50 dark:bg-stone-800/50 rounded-2xl border border-stone-100 dark:border-stone-700">
             <div className="flex items-center gap-3">
               <div className="w-3 h-3 rounded-full bg-rose-500"></div>
               <span className="text-[10px] font-black text-stone-600 dark:text-stone-400 uppercase tracking-widest">Grasas</span>
@@ -413,14 +413,14 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Column 4: IMC & Mascot (Vertical) */}
-      <div className="space-y-8">
+      {/* Column 4: IMC & Mascot */}
+      <div className="space-y-6 md:space-y-8 order-4 md:col-span-2 lg:col-span-1">
         {/* IMC Card */}
-            <div className="card-premium p-8 bg-gradient-to-br from-wine-600 to-wine-800 text-white relative overflow-hidden group">
+            <div className="card-premium p-6 md:p-8 bg-gradient-to-br from-wine-600 to-wine-800 text-white relative overflow-hidden group">
               <div className="relative z-10">
                 <p className="text-[10px] font-black text-wine-100 uppercase tracking-widest mb-1">Índice de Masa Corporal</p>
-                <h4 className="text-4xl font-black mb-1">{targets.bmi}</h4>
-                <p className="text-xs font-bold text-wine-200 uppercase tracking-widest mb-4">{targets.bmiCategory}</p>
+                <h4 className="text-3xl md:text-4xl font-black mb-1">{targets.bmi}</h4>
+                <p className="text-[10px] md:text-xs font-bold text-wine-200 uppercase tracking-widest mb-4">{targets.bmiCategory}</p>
                 
                 <div className="w-full h-1.5 bg-white/20 rounded-full overflow-hidden mt-6">
                   <div 
@@ -431,45 +431,22 @@ const Dashboard: React.FC = () => {
                 <p className="text-[9px] font-medium text-wine-200 mt-2">
                   Basado en {studentInfo?.weight}kg y {studentInfo?.height}cm.
                 </p>
-                <div className="mt-4 pt-4 border-t border-white/10">
-                  <p className="text-[10px] font-black text-wine-100 uppercase tracking-widest mb-1">Meta Actual</p>
-                  <p className="text-xs font-bold capitalize">{studentInfo?.goal?.replace('_', ' ') || 'Mantener'}</p>
-                </div>
               </div>
               <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
             </div>
-
-        {/* Avocado Mascot Card */}
-        <div className="card-premium p-8 bg-white dark:bg-stone-900/40 flex flex-col items-center justify-center text-center">
-          <div className="relative mb-6">
-            <div className="w-32 h-32 bg-stone-50 dark:bg-stone-800 rounded-full flex items-center justify-center text-6xl shadow-inner">
-              🥑
-            </div>
-            <div className="absolute -bottom-2 -right-2 bg-white dark:bg-stone-900 p-2 rounded-xl shadow-lg border border-stone-100 dark:border-stone-700">
-              <span className="text-xl">😐</span>
-            </div>
-          </div>
-          <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-1">Tu Estado</p>
-          <h4 className="text-sm font-black text-stone-900 dark:text-white uppercase tracking-tighter">
-            Alimentación Regular
-          </h4>
-          <p className="text-[10px] text-stone-500 font-medium mt-2 leading-relaxed">
-            Registra más alimentos para mejorar tu puntuación semanal.
-          </p>
-        </div>
 
         {/* PDF Report Button Card */}
         <div className="card-premium p-6 bg-wine-700 text-white relative overflow-hidden group">
           <div className="relative z-10">
             <h4 className="text-sm font-black mb-3 flex items-center gap-2">
               <Crown className="w-4 h-4" />
-              Reporte PDF
+              Reporte Nutricional
             </h4>
             <button 
               onClick={generatePDFReport}
               className="w-full py-3 bg-white text-wine-700 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-wine-50 transition-all active:scale-95 shadow-lg"
             >
-              Descargar Ahora
+              Descargar PDF
             </button>
           </div>
         </div>
@@ -478,45 +455,41 @@ const Dashboard: React.FC = () => {
     </div>
 
     {/* Secondary Sections Grid */}
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-      <div className="lg:col-span-2 space-y-10">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-10">
+      <div className="lg:col-span-2 space-y-8 md:space-y-10">
         <CalorieTrackerChart />
 
         {/* ODS Hambre Cero Section */}
-        <div className="card-premium p-10 bg-gradient-to-br from-emerald-600 to-teal-700 text-white relative overflow-hidden">
+        <div className="card-premium p-6 md:p-10 bg-gradient-to-br from-emerald-600 to-teal-700 text-white relative overflow-hidden">
           <div className="relative z-10">
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center">
-                <CheckCircle className="w-6 h-6" />
+              <div className="w-10 h-10 md:w-12 md:h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center">
+                <CheckCircle className="w-5 h-5 md:w-6 md:h-6" />
               </div>
               <div>
-                <h3 className="text-2xl font-black tracking-tighter">Módulo Hambre Cero</h3>
-                <p className="text-emerald-100 text-xs font-bold uppercase tracking-widest">ODS 2 - Nutrición Sostenible</p>
+                <h3 className="text-xl md:text-2xl font-black tracking-tighter leading-none">Módulo Hambre Cero</h3>
+                <p className="text-emerald-100 text-[10px] font-bold uppercase tracking-widest mt-1">ODS 2 - Nutrición Sostenible</p>
               </div>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              <div className="p-6 bg-white/10 backdrop-blur-md rounded-2xl">
-                <h4 className="font-black text-sm mb-2 uppercase tracking-tighter">Salud Global</h4>
-                <p className="text-xs text-emerald-50 leading-relaxed">Combatir la desnutrición y la obesidad simultáneamente es el reto del siglo XXI.</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+              <div className="p-4 md:p-6 bg-white/10 backdrop-blur-md rounded-2xl">
+                <h4 className="font-black text-xs md:text-sm mb-2 uppercase tracking-tighter">Salud Global</h4>
+                <p className="text-[10px] md:text-xs text-emerald-50 leading-relaxed">Combatir la desnutrición y la obesidad simultáneamente.</p>
               </div>
-              <div className="p-6 bg-white/10 backdrop-blur-md rounded-2xl">
-                <h4 className="font-black text-sm mb-2 uppercase tracking-tighter">Sostenibilidad</h4>
-                <p className="text-xs text-emerald-50 leading-relaxed">Reduce el desperdicio. Consume productos locales y de temporada del CBTis.</p>
+              <div className="p-4 md:p-6 bg-white/10 backdrop-blur-md rounded-2xl">
+                <h4 className="font-black text-xs md:text-sm mb-2 uppercase tracking-tighter">Sostenibilidad</h4>
+                <p className="text-[10px] md:text-xs text-emerald-50 leading-relaxed">Consume productos locales y de temporada del CBTis.</p>
               </div>
-              <div className="p-6 bg-white/10 backdrop-blur-md rounded-2xl">
-                <h4 className="font-black text-sm mb-2 uppercase tracking-tighter">Tips Económicos</h4>
-                <p className="text-xs text-emerald-50 leading-relaxed">Legumbres y frutas locales: opciones baratas y altamente nutritivas para estudiantes.</p>
+              <div className="p-4 md:p-6 bg-white/10 backdrop-blur-md rounded-2xl">
+                <h4 className="font-black text-xs md:text-sm mb-2 uppercase tracking-tighter">Tips</h4>
+                <p className="text-[10px] md:text-xs text-emerald-50 leading-relaxed">Legumbres y frutas locales: baratas y altamente nutritivas.</p>
               </div>
-              <div className="p-6 bg-white/10 backdrop-blur-md rounded-2xl">
-                <h4 className="font-black text-sm mb-2 uppercase tracking-tighter">Impacto Social</h4>
-                <p className="text-xs text-emerald-50 leading-relaxed">Una buena alimentación mejora el rendimiento escolar y el futuro de nuestra comunidad.</p>
+              <div className="p-4 md:p-6 bg-white/10 backdrop-blur-md rounded-2xl">
+                <h4 className="font-black text-xs md:text-sm mb-2 uppercase tracking-tighter">Impacto</h4>
+                <p className="text-[10px] md:text-xs text-emerald-50 leading-relaxed">Mejor alimentación = Mejor rendimiento escolar.</p>
               </div>
             </div>
-            <button className="px-8 py-3 bg-white text-emerald-700 rounded-xl font-black text-sm hover:bg-emerald-50 transition-colors">
-              Explorar Guía ODS
-            </button>
           </div>
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-20 -mt-20 blur-3xl" />
         </div>
       </div>
 
@@ -524,18 +497,17 @@ const Dashboard: React.FC = () => {
       <div className="space-y-6">
         <h3 className="text-xl font-black text-stone-900 dark:text-white tracking-tighter flex items-center gap-3">
           <AlertTriangle className="w-6 h-6 text-wine-600" />
-          Riesgos y Consejos IA
+          Consejos IA
         </h3>
         <div className="space-y-4">
           {studentProfile?.omsRecommendations?.length > 0 ? (
-            studentProfile.omsRecommendations.map((rec: any, i: number) => (
+            studentProfile.omsRecommendations.slice(0, 3).map((rec: any, i: number) => (
               <RecommendationCard key={i} rec={rec} />
             ))
           ) : (
             <div className="card-premium p-10 text-center border-2 border-dashed border-stone-100 dark:border-stone-800">
               <CheckCircle className="w-12 h-12 text-emerald-500 mx-auto mb-4 opacity-50" />
               <p className="text-sm font-black text-stone-400 uppercase tracking-widest">¡Vas por buen camino!</p>
-              <p className="text-xs text-stone-400 font-medium mt-1">Sigue registrando para más consejos.</p>
             </div>
           )}
         </div>

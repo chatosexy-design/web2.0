@@ -129,8 +129,8 @@ const LettuceMascot: React.FC = () => {
     <>
       {/* Mascota Flotante */}
       <div 
-        className="fixed z-[150] cursor-pointer transition-all duration-1000 ease-in-out hover:scale-110"
-        style={{ left: `${position.x}%`, top: `${position.y}%` }}
+        className="fixed z-[150] cursor-pointer transition-all duration-1000 ease-in-out hover:scale-110 bottom-6 right-6 md:bottom-auto md:right-auto"
+        style={window.innerWidth > 768 ? { left: `${position.x}%`, top: `${position.y}%` } : {}}
         onClick={handleOpenChat}
       >
         <div className="relative group">
